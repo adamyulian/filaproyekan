@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UnitResource\Pages;
-use App\Filament\Resources\UnitResource\RelationManagers;
-use App\Models\Unit;
-use Filament\Actions\DeleteAction;
+use App\Filament\Resources\BrandResource\Pages;
+use App\Filament\Resources\BrandResource\RelationManagers;
+use App\Models\Brand;
 use Filament\Forms;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
@@ -18,19 +17,20 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class UnitResource extends Resource
+class BrandResource extends Resource
 {
-    protected static ?string $model = Unit::class;
+    protected static ?string $model = Brand::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-globe-asia-australia';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make(name:'nama')->required(),
-                TextInput::make(name:'deskripsi')->required(),
-                Radio::make('is_published')->label('Is Published?')->boolean()
+                TextInput::make('nama')->required(),
+                TextInput::make('website_url')->required()->label('Website URL'),
+                TextInput::make('industri')->required(),
+                Radio::make('is_published')->label('Is Published?')->boolean()->required()
             ]);
     }
 
@@ -39,8 +39,12 @@ class UnitResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('nama')
-                ->sortable()
-                ->description(fn (Unit $record): string => $record->deskripsi),
+                ->sortable(),
+                TextColumn::make('website_url')
+                ->label('Website URL')
+                ->openUrlInNewTab(),
+                TextColumn::make('industri')
+                ->sortable(),
                 IconColumn::make('is_published')
                 ->label('Status Tayang')
                 ->boolean(),
@@ -73,9 +77,9 @@ class UnitResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUnits::route('/'),
-            'create' => Pages\CreateUnit::route('/create'),
-            'edit' => Pages\EditUnit::route('/{record}/edit'),
+            'index' => Pages\ListBrands::route('/'),
+            'create' => Pages\CreateBrand::route('/create'),
+            'edit' => Pages\EditBrand::route('/{record}/edit'),
         ];
     }
 }
