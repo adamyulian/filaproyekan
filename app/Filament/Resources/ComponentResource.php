@@ -16,6 +16,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -79,10 +80,6 @@ class ComponentResource extends Resource
                 TextColumn::make('harga_Unit')
                 ->label('Harga Satuan')
                 ->money('IDR'),
-                // ->numeric(
-                //     decimalPlaces: 0,
-                //     decimalSeparator: '.',
-                //     thousandsSeparator: ','),
                 TextColumn::make('brand.nama'),
 
             ])
@@ -90,9 +87,11 @@ class ComponentResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

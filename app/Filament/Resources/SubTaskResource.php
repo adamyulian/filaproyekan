@@ -4,13 +4,18 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SubTaskResource\Pages;
 use App\Filament\Resources\SubTaskResource\RelationManagers;
+use App\Filament\Resources\SubTaskResource\RelationManagers\DetailSubTasksRelationManager;
+use App\Models\DetailSubTask;
 use App\Models\SubTask;
 use Filament\Forms;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -30,6 +35,7 @@ class SubTaskResource extends Resource
                 TextInput::make(name:'nama')->required(),
                 TextInput::make(name:'deskripsi')->required(),
                 Radio::make('is_published')->label('Is Published?')->boolean()
+
             ]);
     }
 
@@ -40,6 +46,21 @@ class SubTaskResource extends Resource
                 TextColumn::make('nama')
                 ->sortable()
                 ->description(fn (SubTask $record): string => $record->deskripsi),
+                TextColumn::make('NilaiHSPK')
+                ->state(function (SubTask $record): float {
+                    $subtotal = 0;
+                    $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->id)->get();
+                    foreach ($detailsubtasks as $key => $rincian){
+                        $koefisien = $rincian->koefisien;
+                        $harga_unit = $rincian->component->harga_Unit;
+                        $subtotal1 = $koefisien * $harga_unit;
+                        $subtotal+=$subtotal1;
+                    }
+                    return $subtotal;
+                })
+                ->money('IDR')
+                ->sortable()
+                ->label('Sub Task Price'),
                 IconColumn::make('is_published')
                 ->label('Status Tayang')
                 ->boolean(),
@@ -48,7 +69,12 @@ class SubTaskResource extends Resource
                 //
             ])
             ->actions([
+                ActionGroup::make([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                ])
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -60,10 +86,34 @@ class SubTaskResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('nama'),
+                TextEntry::make('deskripsi'),
+                TextEntry::make('NilaiHSPK')
+                ->state(function (SubTask $record): float {
+                    $subtotal = 0;
+                    $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->id)->get();
+                    foreach ($detailsubtasks as $key => $rincian){
+                        $koefisien = $rincian->koefisien;
+                        $harga_unit = $rincian->component->harga_Unit;
+                        $subtotal1 = $koefisien * $harga_unit;
+                        $subtotal+=$subtotal1;
+                    }
+                    return $subtotal;
+                })
+                ->money('IDR')
+                ->label('Sub Task Price'),
+            ]);
+    }
+
     public static function getRelations(): array
     {
         return [
-            //
+            DetailSubTasksRelationManager::class
         ];
     }
 
@@ -72,6 +122,7 @@ class SubTaskResource extends Resource
         return [
             'index' => Pages\ListSubTasks::route('/'),
             'create' => Pages\CreateSubTask::route('/create'),
+            'view' => Pages\ViewSubTask::route('/{record}'),
             'edit' => Pages\EditSubTask::route('/{record}/edit'),
         ];
     }

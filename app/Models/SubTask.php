@@ -19,9 +19,9 @@ class SubTask extends Model
     {
         return $this->belongsTo(related:Unit::class);
     }
-    public function DetailHspk()
+    public function DetailSubTask()
     {
-        return $this->hasMany(related:DetailHspk::class);
+        return $this->hasMany(related:DetailSubTask::class);
     }
     public function User()
     {
