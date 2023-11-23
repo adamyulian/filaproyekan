@@ -19,6 +19,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class DetailSubTaskResource extends Resource
 {
@@ -30,7 +31,6 @@ class DetailSubTaskResource extends Resource
     {
         return $form
             ->schema([
-
                 Select::make('sub_task_id')
                 ->required()
                 ->label('Sub Task')
@@ -57,13 +57,13 @@ class DetailSubTaskResource extends Resource
                 ->label('Sub Task'),
                 TextColumn::make('component.nama')
                 ->label('Nama Komponen'),
-                TextColumn::make('component.harga_Unit')
+                TextColumn::make('component.hargaunit')
                 ->label('Harga Satuan')
                 ->money('IDR'),
                 TextColumn::make('koefisien'),
                 TextColumn::make('Total')
                 ->state(function (DetailSubTask $record): float {
-                    return $record->component->harga_Unit * $record->koefisien;
+                    return $record->component->hargaunit * $record->koefisien;
                 })
                 ->money('IDR')
                 ->sortable(),
@@ -81,6 +81,7 @@ class DetailSubTaskResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make(),
                 ]),
             ])
             ->emptyStateActions([

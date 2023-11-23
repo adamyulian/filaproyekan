@@ -7,8 +7,10 @@ use App\Filament\Resources\SubTaskResource\RelationManagers;
 use App\Filament\Resources\SubTaskResource\RelationManagers\DetailSubTasksRelationManager;
 use App\Models\DetailSubTask;
 use App\Models\SubTask;
+use App\Models\Unit;
 use Filament\Forms;
 use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\TextEntry;
@@ -21,6 +23,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class SubTaskResource extends Resource
 {
@@ -34,6 +37,11 @@ class SubTaskResource extends Resource
             ->schema([
                 TextInput::make(name:'nama')->required(),
                 TextInput::make(name:'deskripsi')->required(),
+                Select::make('unit_id')
+                ->required()
+                ->label('Unit')
+                ->options(Unit::all()->pluck('nama', 'id'))
+                ->searchable(),
                 Radio::make('is_published')->label('Is Published?')->boolean()
 
             ]);
@@ -46,13 +54,14 @@ class SubTaskResource extends Resource
                 TextColumn::make('nama')
                 ->sortable()
                 ->description(fn (SubTask $record): string => $record->deskripsi),
+                TextColumn::make('unit.nama'),
                 TextColumn::make('NilaiHSPK')
                 ->state(function (SubTask $record): float {
                     $subtotal = 0;
                     $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->id)->get();
                     foreach ($detailsubtasks as $key => $rincian){
                         $koefisien = $rincian->koefisien;
-                        $harga_unit = $rincian->component->harga_Unit;
+                        $harga_unit = $rincian->component->hargaunit;
                         $subtotal1 = $koefisien * $harga_unit;
                         $subtotal+=$subtotal1;
                     }
@@ -79,6 +88,7 @@ class SubTaskResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()
                 ]),
             ])
             ->emptyStateActions([
@@ -99,7 +109,7 @@ class SubTaskResource extends Resource
                     $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->id)->get();
                     foreach ($detailsubtasks as $key => $rincian){
                         $koefisien = $rincian->koefisien;
-                        $harga_unit = $rincian->component->harga_Unit;
+                        $harga_unit = $rincian->component->hargaunit;
                         $subtotal1 = $koefisien * $harga_unit;
                         $subtotal+=$subtotal1;
                     }

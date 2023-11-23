@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::post('/components/import_excel', 'ComponentController@import_excel')->name('import');

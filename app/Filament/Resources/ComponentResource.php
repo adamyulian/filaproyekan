@@ -21,8 +21,10 @@ use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ComponentResource extends Resource
 {
@@ -48,7 +50,7 @@ class ComponentResource extends Resource
                 ->label('Unit')
                 ->options(Unit::all()->pluck('nama', 'id'))
                 ->searchable(),
-                TextInput::make('harga_Unit')
+                TextInput::make('hargaunit')
                 ->required(),
                 TextInput::make('deskripsi')
                 ->required(),
@@ -77,7 +79,7 @@ class ComponentResource extends Resource
                     'Peralatan' => 'Peralatan',
                 ]),
                 TextColumn::make('unit.nama'),
-                TextColumn::make('harga_Unit')
+                TextColumn::make('hargaunit')
                 ->label('Harga Satuan')
                 ->money('IDR'),
                 TextColumn::make('brand.nama'),
@@ -96,8 +98,13 @@ class ComponentResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make(),
                 ]),
             ])
+            // ->headerActions([
+            //     Tables\Actions\CreateAction::make(),
+
+            // ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
             ]);
@@ -118,4 +125,5 @@ class ComponentResource extends Resource
             'edit' => Pages\EditComponent::route('/{record}/edit'),
         ];
     }
+
 }

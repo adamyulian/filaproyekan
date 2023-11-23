@@ -13,6 +13,7 @@ class SubTask extends Model
     protected $fillable = [
         'nama',
         'deskripsi',
+        'unit_id',
         'is_published'
     ];
     public function Unit()

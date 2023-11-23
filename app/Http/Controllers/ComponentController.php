@@ -6,6 +6,10 @@ use App\Models\Component;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreComponentRequest;
 use App\Http\Requests\UpdateComponentRequest;
+use App\Imports\ImportComponents;
+use Illuminate\Contracts\Session\Session;
+use Illuminate\Support\Facades\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ComponentController extends Controller
 {
@@ -64,4 +68,19 @@ class ComponentController extends Controller
     {
         //
     }
+
+    public function import_excel(Request $request)
+	{
+		// menangkap file excel
+		$file = $request->file('file');
+
+		// membuat nama file unik
+		$nama_file = rand().$file->getClientOriginalName();
+
+		// upload ke folder file_siswa di dalam folder public
+		$file->move('file_siswa',$nama_file);
+
+		// import data
+		Excel::import(new ImportComponents, public_path('/file_component/'.$nama_file));
+	}
 }

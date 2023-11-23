@@ -15,7 +15,7 @@ class Component extends Model
         'jenis',
         'unit_id',
         'user_id',
-        'harga_Unit',
+        'hargaunit',
         'deskripsi',
         'brand_id'
     ];

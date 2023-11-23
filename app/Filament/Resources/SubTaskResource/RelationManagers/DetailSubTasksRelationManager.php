@@ -33,13 +33,13 @@ class DetailSubTasksRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('component.nama')
                 ->label('Nama Komponen'),
-                TextColumn::make('component.harga_Unit')
+                TextColumn::make('component.hargaunit')
                 ->label('Harga Satuan')
                 ->money('IDR'),
                 TextColumn::make('koefisien'),
                 TextColumn::make('Total')
                 ->state(function (DetailSubTask $record): float {
-                    return $record->component->harga_Unit * $record->koefisien;
+                    return $record->component->hargaunit * $record->koefisien;
                 })
                 ->money('IDR')
                 ->sortable(),

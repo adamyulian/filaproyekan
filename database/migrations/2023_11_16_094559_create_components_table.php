@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama');
             $table->string('jenis');
-            $table->decimal('harga_Unit');
+            $table->float('hargaunit');
             $table->text('deskripsi');
             $table->foreignIdfor(Unit::class);
             $table->foreignIdfor(Brand::class);
