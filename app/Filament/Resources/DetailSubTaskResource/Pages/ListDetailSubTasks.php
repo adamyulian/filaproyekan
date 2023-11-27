@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\DetailSubTaskResource\Pages;
 
 use App\Filament\Resources\DetailSubTaskResource;
+use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -14,6 +15,8 @@ class ListDetailSubTasks extends ListRecords
     {
         return [
             Actions\CreateAction::make(),
+            ExcelImportAction::make()
+            ->color("primary"),
         ];
     }
 }

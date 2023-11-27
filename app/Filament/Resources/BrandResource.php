@@ -25,6 +25,8 @@ class BrandResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-globe-asia-australia';
 
+    protected static ?string $navigationGroup = 'Setting';
+
     public static function form(Form $form): Form
     {
         return $form

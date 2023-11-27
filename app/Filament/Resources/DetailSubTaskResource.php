@@ -4,9 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DetailSubTaskResource\Pages;
 use App\Filament\Resources\DetailSubTaskResource\RelationManagers;
+use App\Models\Brand;
 use App\Models\Component;
 use App\Models\DetailSubTask;
 use App\Models\SubTask;
+use App\Models\Unit;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -27,6 +30,8 @@ class DetailSubTaskResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationGroup = 'Planning';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -39,7 +44,36 @@ class DetailSubTaskResource extends Resource
                 Select::make('component_id')
                 ->required()
                 ->label('Component')
-                ->options(Component::all()->pluck('nama', 'id'))
+                ->relationship(name: 'component', titleAttribute: 'nama')
+                ->createOptionForm([
+                    TextInput::make('nama')
+                    ->required(),
+                    Select::make('jenis')
+                    ->required()
+                    ->options([
+                        'Tenaga Kerja' => 'Tenaga Kerja',
+                        'Bahan' => 'Bahan',
+                        'Peralatan' => 'Peralatan',
+                    ]),
+                    Select::make('unit_id')
+                    ->required()
+                    ->label('Unit')
+                    ->options(Unit::all()->pluck('nama', 'id'))
+                    ->searchable(),
+                    TextInput::make('hargaunit')
+                    ->label('Harga Satuan')
+                    ->required(),
+                    TextInput::make('deskripsi')
+                    ->required(),
+                    Select::make('brand_id')
+                    ->required()
+                    ->label('Brand')
+                    ->options(Brand::all()->pluck('nama', 'id'))
+                    ->searchable(),
+                    Select::make('user_id')
+                    ->options(User::all()->pluck('name','id'))
+                    ->searchable()
+                    ])
                 ->searchable(),
                 TextInput::make('koefisien')
                 ->required(),
@@ -54,7 +88,8 @@ class DetailSubTaskResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('subtask.nama')
-                ->label('Sub Task'),
+                ->label('Sub Task')
+                ->searchable(),
                 TextColumn::make('component.nama')
                 ->label('Nama Komponen'),
                 TextColumn::make('component.hargaunit')

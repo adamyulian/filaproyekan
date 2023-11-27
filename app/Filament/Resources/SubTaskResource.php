@@ -31,6 +31,8 @@ class SubTaskResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
 
+    protected static ?string $navigationGroup = 'Planning';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -53,7 +55,8 @@ class SubTaskResource extends Resource
             ->columns([
                 TextColumn::make('nama')
                 ->sortable()
-                ->description(fn (SubTask $record): string => $record->deskripsi),
+                ->description(fn (SubTask $record): string => $record->deskripsi)
+                ->searchable(),
                 TextColumn::make('unit.nama'),
                 TextColumn::make('NilaiHSPK')
                 ->state(function (SubTask $record): float {
@@ -116,7 +119,7 @@ class SubTaskResource extends Resource
                     return $subtotal;
                 })
                 ->money('IDR')
-                ->label('Sub Task Price'),
+                ->label('Sub Task Price')
             ]);
     }
 

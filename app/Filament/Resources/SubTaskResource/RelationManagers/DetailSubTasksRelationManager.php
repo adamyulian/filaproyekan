@@ -2,8 +2,15 @@
 
 namespace App\Filament\Resources\SubTaskResource\RelationManagers;
 
+use App\Models\Brand;
+use App\Models\Component;
 use App\Models\DetailSubTask;
+use App\Models\SubTask;
+use App\Models\Unit;
+use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -20,9 +27,45 @@ class DetailSubTasksRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('koefisien')
-                    ->required()
-                    ->maxLength(255),
+                Select::make('component_id')
+                ->required()
+                ->label('Component')
+                ->relationship(name: 'component', titleAttribute: 'nama')
+                ->createOptionForm([
+                        TextInput::make('nama')
+                        ->required(),
+                        Select::make('jenis')
+                        ->required()
+                        ->options([
+                            'Tenaga Kerja' => 'Tenaga Kerja',
+                            'Bahan' => 'Bahan',
+                            'Peralatan' => 'Peralatan',
+                        ]),
+                        Select::make('unit_id')
+                        ->required()
+                        ->label('Unit')
+                        ->options(Unit::all()->pluck('nama', 'id'))
+                        ->searchable(),
+                        TextInput::make('hargaunit')
+                        ->label('Harga Satuan')
+                        ->required(),
+                        TextInput::make('deskripsi')
+                        ->required(),
+                        Select::make('brand_id')
+                        ->required()
+                        ->label('Brand')
+                        ->options(Brand::all()->pluck('nama', 'id'))
+                        ->searchable(),
+                        Select::make('user_id')
+                        ->options(User::all()->pluck('name','id'))
+                        ->searchable()
+                        ])
+                ->searchable(),
+                TextInput::make('koefisien')
+                ->required(),
+                // Select::make('user_id')
+                // ->options(User::all()->pluck('name','id'))
+                // ->searchable(),
             ]);
     }
 

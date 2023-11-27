@@ -32,6 +32,8 @@ class ComponentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
 
+    protected static ?string $navigationGroup = 'Planning';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -51,6 +53,7 @@ class ComponentResource extends Resource
                 ->options(Unit::all()->pluck('nama', 'id'))
                 ->searchable(),
                 TextInput::make('hargaunit')
+                ->label('Harga Satuan')
                 ->required(),
                 TextInput::make('deskripsi')
                 ->required(),
@@ -71,7 +74,9 @@ class ComponentResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('nama')
-                ->sortable()->description(fn (Component $record): string => $record->deskripsi),
+                ->sortable()
+                ->description(fn (Component $record): string => $record->deskripsi)
+                ->searchable(),
                 SelectColumn::make('jenis')
                 ->options([
                     'Tenaga Kerja' => 'Tenaga Kerja',
