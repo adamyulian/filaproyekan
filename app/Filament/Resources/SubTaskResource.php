@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SubTaskResource\Pages;
 use App\Filament\Resources\SubTaskResource\RelationManagers;
 use App\Filament\Resources\SubTaskResource\RelationManagers\DetailSubTasksRelationManager;
+use App\Models\Component;
 use App\Models\DetailSubTask;
 use App\Models\SubTask;
 use App\Models\Unit;
@@ -58,7 +59,7 @@ class SubTaskResource extends Resource
                 ->description(fn (SubTask $record): string => $record->deskripsi)
                 ->searchable(),
                 TextColumn::make('unit.nama'),
-                TextColumn::make('NilaiHSPK')
+                TextColumn::make('SubTask Value')
                 ->state(function (SubTask $record): float {
                     $subtotal = 0;
                     $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->id)->get();
@@ -71,7 +72,6 @@ class SubTaskResource extends Resource
                     return $subtotal;
                 })
                 ->money('IDR')
-                ->sortable()
                 ->label('Sub Task Price'),
                 IconColumn::make('is_published')
                 ->label('Status Tayang')
@@ -106,7 +106,7 @@ class SubTaskResource extends Resource
             ->schema([
                 TextEntry::make('nama'),
                 TextEntry::make('deskripsi'),
-                TextEntry::make('NilaiHSPK')
+                TextEntry::make('sub_task_price')
                 ->state(function (SubTask $record): float {
                     $subtotal = 0;
                     $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->id)->get();
