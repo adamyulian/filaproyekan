@@ -2,20 +2,26 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\SubTaskResource\Pages\ViewTask;
 use App\Filament\Resources\TaskResource\Pages;
 use App\Filament\Resources\TaskResource\RelationManagers;
+use App\Filament\Resources\TaskResource\RelationManagers\DetailTasksRelationManager;
 use App\Models\DetailSubTask;
 use App\Models\DetailTask;
 use App\Models\SubTask;
 use App\Models\Task;
 use App\Models\Unit;
+use Filament\Actions\ActionGroup;
 use Filament\Forms;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -91,7 +97,11 @@ class TaskResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ActionsActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                    ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -105,10 +115,49 @@ class TaskResource extends Resource
             ]);
     }
 
+
+    public static function infolist(Infolist $infolist): Infolist
+
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('nama'),
+                TextEntry::make('deskripsi'),
+                TextEntry::make('task_price')
+                ->state(function (Task $record): float {
+                    $detailtasks = DetailTask::select('*')->where('task_id', $record->id)->get();
+                    // $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', 1)->get();
+                    // foreach ($detailsubtasks as $key => $rincian){
+                    //     $koefisien = $rincian->koefisien;
+                    //     $harga_unit = $rincian->component->hargaunit;
+                    //     $subtotal1 = $koefisien * $harga_unit;
+                    //     $subtotal+=$subtotal1;
+                    // }
+
+                    $taskvalue = 0;
+                    foreach ($detailtasks as $key => $rincian1){
+                        $subtotal = 0;
+                        $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $rincian1->sub_task_id)->get();
+                        foreach ($detailsubtasks as $key => $rincian){
+                            $koefisien = $rincian->koefisien;
+                            $harga_unit = $rincian->component->hargaunit;
+                            $subtotal1 = $koefisien * $harga_unit;
+                            $subtotal+=$subtotal1;
+                        }
+                        $taskvalue1 = $subtotal * $rincian1->koefisien;
+                        $taskvalue+=$taskvalue1;
+                    }
+                    return $taskvalue;
+                })
+                ->money('IDR')
+                ->label('Task Price'),
+            ]);
+    }
+
     public static function getRelations(): array
     {
         return [
-            //
+            DetailTasksRelationManager::class
         ];
     }
 
@@ -117,6 +166,7 @@ class TaskResource extends Resource
         return [
             'index' => Pages\ListTasks::route('/'),
             'create' => Pages\CreateTask::route('/create'),
+            'view' => Pages\ViewTask::route('/{record}'),
             'edit' => Pages\EditTask::route('/{record}/edit'),
         ];
     }
