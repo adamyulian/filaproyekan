@@ -100,8 +100,7 @@ class DetailSubTaskResource extends Resource
                 ->state(function (DetailSubTask $record): float {
                     return $record->component->hargaunit * $record->koefisien;
                 })
-                ->money('IDR')
-                ->sortable(),
+                ->money('IDR'),
             ])
             ->filters([
                 //

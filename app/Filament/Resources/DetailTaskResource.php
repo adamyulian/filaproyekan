@@ -72,7 +72,8 @@ class DetailTaskResource extends Resource
                 })
                 ->label('SubTask Price')
                 ->money('IDR'),
-                TextColumn::make('koefisien'),
+                TextColumn::make('koefisien')
+                ->label('Volume'),
                 TextColumn::make('Total')
                 ->state(function (DetailTask $record): float {
                     $subtotal = 0;
