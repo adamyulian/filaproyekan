@@ -73,9 +73,12 @@ class DetailSubTasksRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('koefisien')
+            ->defaultGroup('component.jenis')
             ->columns([
                 TextColumn::make('component.nama')
                 ->label('Nama Komponen'),
+                TextColumn::make('component.unit.nama')
+                ->label('Satuan'),
                 TextColumn::make('component.hargaunit')
                 ->label('Harga Satuan')
                 ->money('IDR'),

@@ -72,17 +72,12 @@ class ComponentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultGroup('jenis')
             ->columns([
                 TextColumn::make('nama')
                 ->sortable()
                 ->description(fn (Component $record): string => $record->deskripsi)
                 ->searchable(),
-                SelectColumn::make('jenis')
-                ->options([
-                    'Tenaga Kerja' => 'Tenaga Kerja',
-                    'Bahan' => 'Bahan',
-                    'Peralatan' => 'Peralatan',
-                ]),
                 TextColumn::make('unit.nama'),
                 TextColumn::make('hargaunit')
                 ->label('Harga Satuan')

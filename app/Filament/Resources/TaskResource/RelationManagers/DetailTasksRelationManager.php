@@ -48,7 +48,8 @@ class DetailTasksRelationManager extends RelationManager
                 })
                 ->label('SubTask Price')
                 ->money('IDR'),
-                TextColumn::make('koefisien'),
+                TextColumn::make('subtask.unit.nama'),
+                TextColumn::make('koefisien')->label('Volume'),
                 TextColumn::make('Total')
                 ->state(function (DetailTask $record): float {
                     $subtotal = 0;
