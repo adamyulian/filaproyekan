@@ -24,8 +24,9 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->brandName('Fila-PROYEKAN')
             ->id('admin')
-            ->path('admin')
+            ->path('2023')
             ->login()
             ->colors([
                 'danger' => Color::Rose,
@@ -42,8 +43,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+
             ])
             ->navigationGroups([
                 'Planning',
