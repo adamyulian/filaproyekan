@@ -4,7 +4,12 @@ namespace App\Filament\Resources\TaskResource\RelationManagers;
 
 use App\Models\DetailSubTask;
 use App\Models\DetailTask;
+use App\Models\SubTask;
+use App\Models\Unit;
 use Filament\Forms;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -21,9 +26,12 @@ class DetailTasksRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama')
-                    ->required()
-                    ->maxLength(255),
+            Select::make('sub_task_id')
+            ->required()
+            ->label('Sub Task')
+            ->options(SubTask::all()->pluck('nama', 'id')),
+            TextInput::make('koefisien')
+            ->required(),
             ]);
     }
 
