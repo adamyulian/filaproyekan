@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Component extends Model
+class CostComponent extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -26,10 +26,6 @@ class Component extends Model
     public function Brand()
     {
         return $this->belongsTo(related:Brand::class);
-    }
-    public function DetailSubTask()
-    {
-        return $this->hasMany(related:DetailSubTask::class);
     }
 
     public function User()

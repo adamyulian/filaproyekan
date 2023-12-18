@@ -6,6 +6,7 @@ use App\Filament\Resources\SubTaskResource\Pages;
 use App\Filament\Resources\SubTaskResource\RelationManagers;
 use App\Filament\Resources\SubTaskResource\RelationManagers\DetailSubTasksRelationManager;
 use App\Models\Component;
+use App\Models\DetailCostSubTask;
 use App\Models\DetailSubTask;
 use App\Models\SubTask;
 use App\Models\Unit;
@@ -56,10 +57,9 @@ class SubTaskResource extends Resource
             ->columns([
                 TextColumn::make('nama')
                 ->sortable()
-                ->description(fn (SubTask $record): string => $record->deskripsi)
                 ->searchable(),
                 TextColumn::make('unit.nama'),
-                TextColumn::make('SubTask Value')
+                TextColumn::make('budget')
                 ->state(function (SubTask $record): float {
                     $subtotal = 0;
                     $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->id)->get();
@@ -72,7 +72,43 @@ class SubTaskResource extends Resource
                     return $subtotal;
                 })
                 ->money('IDR')
-                ->label('Sub Task Price'),
+                ->label('Budget'),
+                TextColumn::make('cost')
+                ->state(function (SubTask $record): float {
+                    $subtotal = 0;
+                    $detailcostsubtasks = DetailCostSubTask::select('*')->where('sub_task_id', $record->id)->get();
+                    foreach ($detailcostsubtasks as $key => $rincian){
+                        $volume = $rincian->volume;
+                        $harga_unit = $rincian->costcomponent->hargaunit;
+                        $subtotal1 = $volume * $harga_unit;
+                        $subtotal+=$subtotal1;
+                    }
+                    return $subtotal;
+                })
+                ->money('IDR')
+                ->label('Cost'),
+                TextColumn::make('Remaining Budget')
+                ->money('IDR')
+                ->label('Remaining Budget')
+                ->state(function (SubTask $record): float {
+                    $subtotal = 0;
+                    $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->id)->get();
+                    foreach ($detailsubtasks as $key => $rincian){
+                        $koefisien = $rincian->koefisien;
+                        $harga_unit = $rincian->component->hargaunit;
+                        $subtotal1 = $koefisien * $harga_unit;
+                        $subtotal+=$subtotal1;
+                    }
+                    $subtotalcost = 0;
+                    $detailcostsubtasks = DetailCostSubTask::select('*')->where('sub_task_id', $record->id)->get();
+                    foreach ($detailcostsubtasks as $key => $rincian){
+                        $volume = $rincian->volume;
+                        $harga_unit = $rincian->costcomponent->hargaunit;
+                        $subtotal1 = $volume * $harga_unit;
+                        $subtotalcost+=$subtotal1;
+                    }
+                    return $subtotal-$subtotalcost;
+                }),
                 IconColumn::make('is_published')
                 ->label('Status Tayang')
                 ->boolean(),
@@ -106,7 +142,7 @@ class SubTaskResource extends Resource
             ->schema([
                 TextEntry::make('nama'),
                 TextEntry::make('deskripsi'),
-                TextEntry::make('sub_task_price')
+                TextEntry::make('Budget')
                 ->state(function (SubTask $record): float {
                     $subtotal = 0;
                     $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->id)->get();
@@ -119,7 +155,43 @@ class SubTaskResource extends Resource
                     return $subtotal;
                 })
                 ->money('IDR')
-                ->label('Sub Task Price')
+                ->label('Budget'),
+                TextEntry::make('Cost')
+                ->state(function (SubTask $record): float {
+                    $subtotal = 0;
+                    $detailcostsubtasks = DetailCostSubTask::select('*')->where('sub_task_id', $record->id)->get();
+                    foreach ($detailcostsubtasks as $key => $rincian){
+                        $volume = $rincian->volume;
+                        $harga_unit = $rincian->costcomponent->hargaunit;
+                        $subtotal1 = $volume * $harga_unit;
+                        $subtotal+=$subtotal1;
+                    }
+                    return $subtotal;
+                })
+                ->money('IDR')
+                ->label('Cost'),
+                TextEntry::make('Remaining Budget')
+                ->money('IDR')
+                ->label('Remaining Budget')
+                ->state(function (SubTask $record): float {
+                    $subtotal = 0;
+                    $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->id)->get();
+                    foreach ($detailsubtasks as $key => $rincian){
+                        $koefisien = $rincian->koefisien;
+                        $harga_unit = $rincian->component->hargaunit;
+                        $subtotal1 = $koefisien * $harga_unit;
+                        $subtotal+=$subtotal1;
+                    }
+                    $subtotalcost = 0;
+                    $detailcostsubtasks = DetailCostSubTask::select('*')->where('sub_task_id', $record->id)->get();
+                    foreach ($detailcostsubtasks as $key => $rincian){
+                        $volume = $rincian->volume;
+                        $harga_unit = $rincian->costcomponent->hargaunit;
+                        $subtotal1 = $volume * $harga_unit;
+                        $subtotalcost+=$subtotal1;
+                    }
+                    return $subtotal-$subtotalcost;
+                })
             ]);
     }
 
