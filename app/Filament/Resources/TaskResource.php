@@ -5,7 +5,11 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SubTaskResource\Pages\ViewTask;
 use App\Filament\Resources\TaskResource\Pages;
 use App\Filament\Resources\TaskResource\RelationManagers;
+use App\Filament\Resources\TaskResource\RelationManagers\DetailCostSubTaskRelationManager;
+use App\Filament\Resources\TaskResource\RelationManagers\DetailCostTaskRelationManager;
 use App\Filament\Resources\TaskResource\RelationManagers\DetailTasksRelationManager;
+use App\Models\DetailCostSubTask;
+use App\Models\DetailCostTask;
 use App\Models\DetailSubTask;
 use App\Models\DetailTask;
 use App\Models\SubTask;
@@ -59,19 +63,12 @@ class TaskResource extends Resource
                 TextColumn::make('nama')
                 ->sortable()
                 ->description(fn (Task $record): string => $record->deskripsi)
-                ->searchable(),
+                ->searchable()
+                ->label('Name'),
                 TextColumn::make('unit.nama'),
-                TextColumn::make('Task Value')
+                TextColumn::make('BCWS')
                 ->state(function (Task $record): float {
                     $detailtasks = DetailTask::select('*')->where('task_id', $record->id)->get();
-                    // $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', 1)->get();
-                    // foreach ($detailsubtasks as $key => $rincian){
-                    //     $koefisien = $rincian->koefisien;
-                    //     $harga_unit = $rincian->component->hargaunit;
-                    //     $subtotal1 = $koefisien * $harga_unit;
-                    //     $subtotal+=$subtotal1;
-                    // }
-
                     $taskvalue = 0;
                     foreach ($detailtasks as $key => $rincian1){
                         $subtotal = 0;
@@ -88,9 +85,43 @@ class TaskResource extends Resource
                     return $taskvalue;
                 })
                 ->money('IDR')
-                ->label('Task Price'),
+                ->label('BCWS (Planned)'),
+                TextColumn::make('BCWP')
+                ->state(function (Task $record): float {
+                    $detailcosttasks = DetailCostTask::select('*')->where('task_id', $record->id)->get();
+                    $taskvalue = 0;
+                    foreach ($detailcosttasks as $key => $rincian1){
+                        $subtotal = 0;
+                        $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $rincian1->sub_task_id)->get();
+                        foreach ($detailsubtasks as $key => $rincian){
+                            $koefisien = $rincian->koefisien;
+                            $harga_unit = $rincian->component->hargaunit;
+                            $subtotal1 = $koefisien * $harga_unit;
+                            $subtotal+=$subtotal1;
+                        }
+                        $taskvalue1 = $subtotal * $rincian1->volume;
+                        $taskvalue+=$taskvalue1;
+                    }
+                    return $taskvalue;
+                })
+                ->money('IDR')
+                ->label('BCWP (Earned)'),
+                TextColumn::make('ACWP')
+                ->state(function (Task $record): float {
+                    $subtotal = 0;
+                    $detailcostsubtasks = DetailCostSubTask::select('*')->where('task_id', $record->id)->get();
+                    foreach ($detailcostsubtasks as $key => $rincian){
+                        $koefisien = $rincian->volume;
+                        $harga_unit = $rincian->costcomponent->hargaunit;
+                        $subtotal1 = $koefisien * $harga_unit;
+                        $subtotal+=$subtotal1;
+                    }
+                    return $subtotal;
+                })
+                ->money('IDR')
+                ->label('ACWP (Actual)'),
                 IconColumn::make('is_published')
-                ->label('Status Tayang')
+                ->label('Visibility')
                 ->boolean(),
             ])
             ->filters([
@@ -121,19 +152,13 @@ class TaskResource extends Resource
     {
         return $infolist
             ->schema([
-                TextEntry::make('nama'),
-                TextEntry::make('deskripsi'),
-                TextEntry::make('task_price')
+                TextEntry::make('nama')
+                ->label('Name'),
+                TextEntry::make('deskripsi')
+                ->label('Description'),
+                TextEntry::make('BCWS')
                 ->state(function (Task $record): float {
                     $detailtasks = DetailTask::select('*')->where('task_id', $record->id)->get();
-                    // $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', 1)->get();
-                    // foreach ($detailsubtasks as $key => $rincian){
-                    //     $koefisien = $rincian->koefisien;
-                    //     $harga_unit = $rincian->component->hargaunit;
-                    //     $subtotal1 = $koefisien * $harga_unit;
-                    //     $subtotal+=$subtotal1;
-                    // }
-
                     $taskvalue = 0;
                     foreach ($detailtasks as $key => $rincian1){
                         $subtotal = 0;
@@ -150,14 +175,50 @@ class TaskResource extends Resource
                     return $taskvalue;
                 })
                 ->money('IDR')
-                ->label('Task Price'),
+                ->label('BCWS (Planned)'),
+                TextEntry::make('BCWP')
+                ->state(function (Task $record): float {
+                    $detailcosttasks = DetailCostTask::select('*')->where('task_id', $record->id)->get();
+                    $taskvalue = 0;
+                    foreach ($detailcosttasks as $key => $rincian1){
+                        $subtotal = 0;
+                        $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $rincian1->sub_task_id)->get();
+                        foreach ($detailsubtasks as $key => $rincian){
+                            $koefisien = $rincian->koefisien;
+                            $harga_unit = $rincian->component->hargaunit;
+                            $subtotal1 = $koefisien * $harga_unit;
+                            $subtotal+=$subtotal1;
+                        }
+                        $taskvalue1 = $subtotal * $rincian1->volume;
+                        $taskvalue+=$taskvalue1;
+                    }
+                    return $taskvalue;
+                })
+                ->money('IDR')
+                ->label('BCWP (Earned)'),
+                TextEntry::make('ACWP')
+                ->state(function (Task $record): float {
+                    $subtotal = 0;
+                    $detailcostsubtasks = DetailCostSubTask::select('*')->where('task_id', $record->id)->get();
+                    foreach ($detailcostsubtasks as $key => $rincian){
+                        $koefisien = $rincian->volume;
+                        $harga_unit = $rincian->costcomponent->hargaunit;
+                        $subtotal1 = $koefisien * $harga_unit;
+                        $subtotal+=$subtotal1;
+                    }
+                    return $subtotal;
+                })
+                ->money('IDR')
+                ->label('ACWP (Actual)'),
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            DetailTasksRelationManager::class
+            DetailTasksRelationManager::class,
+            DetailCostTaskRelationManager::class,
+            DetailCostSubTaskRelationManager::class
         ];
     }
 

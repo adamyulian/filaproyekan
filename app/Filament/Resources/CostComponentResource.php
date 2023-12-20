@@ -81,21 +81,18 @@ class CostComponentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable()
-                    ->label('Nama'),
-                Tables\Columns\TextColumn::make('jenis')
-                    ->searchable()
-                    ->label('Jenis Biaya'),
+                    ->label('Name'),
+                Tables\Columns\TextColumn::make('unit.nama')
+                    ->label('Unit')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('hargaunit')
-                    ->label('Harga Satuan')
+                    ->label('Price')
                     ->numeric()
                     ->money('IDR')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('unit.nama')
-                    ->label('Satuan')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('brand.nama')
-                    ->label('Merk')
+                    ->label('Brand')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

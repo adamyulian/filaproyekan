@@ -87,14 +87,12 @@ class DetailSubTaskResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultGroup('subtask.nama')
             ->columns([
-                TextColumn::make('subtask.nama')
-                ->label('Sub Task')
-                ->searchable(),
                 TextColumn::make('component.nama')
-                ->label('Nama Komponen'),
+                ->label('Component'),
                 TextColumn::make('component.hargaunit')
-                ->label('Harga Satuan')
+                ->label('Price')
                 ->money('IDR'),
                 TextColumn::make('koefisien'),
                 TextColumn::make('Total')

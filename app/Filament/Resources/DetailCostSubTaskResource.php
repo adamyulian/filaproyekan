@@ -30,6 +30,8 @@ class DetailCostSubTaskResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationLabel = 'Detail Cost Sub Tasks (ACWP)';
+
     protected static ?string $navigationGroup = 'Contruction';
 
     public static function form(Form $form): Form
@@ -92,21 +94,18 @@ class DetailCostSubTaskResource extends Resource
             ->groups([
                 Group::make('costcomponent.jenis')
                 ->collapsible()
-                ->label('Jenis Biaya'),
+                ->label('Category'),
                 Group::make('subtask.nama')
                 ->collapsible()
                 ->label('Sub Task'),
             ])
             ->columns([
-                TextColumn::make('subtask.nama')
-                ->label('Sub Task')
-                ->searchable(),
                 TextColumn::make('costcomponent.nama')
-                ->label('Komponen'),
+                ->label('Cost Component'),
                 TextColumn::make('costcomponent.unit.nama')
-                ->label('Satuan'),
+                ->label('Unit'),
                 TextColumn::make('costcomponent.hargaunit')
-                ->label('Harga Satuan')
+                ->label('Price')
                 ->money('IDR'),
                 TextColumn::make('volume'),
                 TextColumn::make('Total')

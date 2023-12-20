@@ -20,6 +20,7 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,6 +34,8 @@ class ComponentResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
 
     protected static ?string $navigationGroup = 'Planning';
+
+
 
     public static function form(Form $form): Form
     {
@@ -72,6 +75,7 @@ class ComponentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+
             ->defaultGroup('jenis')
             ->columns([
                 TextColumn::make('nama')
@@ -86,7 +90,6 @@ class ComponentResource extends Resource
 
             ])
             ->filters([
-                //
             ])
             ->actions([
                 ActionGroup::make([
@@ -109,6 +112,7 @@ class ComponentResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
+
 
     public static function getRelations(): array
     {

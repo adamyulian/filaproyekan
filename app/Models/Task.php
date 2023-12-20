@@ -28,6 +28,16 @@ class Task extends Model
     {
         return $this->hasMany(related:DetailTask::class);
     }
+
+    public function DetailCostTask()
+    {
+        return $this->hasMany(related:DetailCostTask::class);
+    }
+
+    public function DetailCostSubTask()
+    {
+        return $this->hasMany(related:DetailCostSubTask::class);
+    }
     public function User()
     {
         return $this->belongsTo(related:User::class);

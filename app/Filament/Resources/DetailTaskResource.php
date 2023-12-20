@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DetailTaskResource\Pages;
 use App\Filament\Resources\DetailTaskResource\RelationManagers;
 use App\Models\Component;
+use App\Models\DetailCostSubTask;
 use App\Models\DetailSubTask;
 use App\Models\DetailTask;
 use App\Models\SubTask;
@@ -14,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -52,10 +54,8 @@ class DetailTaskResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultGroup('task.nama')
             ->columns([
-                TextColumn::make('task.nama')
-                ->label('Task')
-                ->searchable(),
                 TextColumn::make('subtask.nama')
                 ->label('Sub Task'),
                 TextColumn::make('sub_task_price')
@@ -87,6 +87,32 @@ class DetailTaskResource extends Resource
                     return $subtotal * $record->koefisien;
                 })
                 ->money('IDR'),
+                // TextColumn::make('Remaining Budget')
+                // ->money('IDR')
+                // ->label('Remaining Budget')
+                // ->weight(FontWeight::Bold)
+                // ->color('primary')
+                // ->state(function (DetailTask $record): float {
+                //     $subtotal = 0;
+                //     $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->sub_task_id)->get();
+                //     foreach ($detailsubtasks as $key => $rincian){
+                //         $koefisien = $rincian->koefisien;
+                //         $harga_unit = $rincian->component->hargaunit;
+                //         $subtotal1 = $koefisien * $harga_unit;
+                //         $subtotal+=$subtotal1;
+                //     }
+                //     $subtotalcost = 0;
+                //     $detailcostsubtasks = DetailCostSubTask::select('*')->where('sub_task_id', $record->sub_task_id)->get();
+                //     foreach ($detailcostsubtasks as $key => $rincian){
+                //         $volume = $rincian->volume;
+                //         $harga_unit = $rincian->costcomponent->hargaunit;
+                //         $subtotal1 = $volume * $harga_unit;
+                //         $subtotalcost+=$subtotal1;
+                //     }
+                //     return $subtotal-$subtotalcost;
+                // }),
+
+
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
