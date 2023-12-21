@@ -14,6 +14,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Resources\Components\Tab;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
@@ -130,6 +131,19 @@ class ComponentResource extends Resource
     {
         return [
             //
+        ];
+    }
+
+    public function getTabs(): array
+    {
+        return [
+            'all' => Tab::make('All Components'),
+            'Bahan' => Tab::make('Bahan')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Bahan')),
+            'Tenaga Kerja' => Tab::make('Inactive customers')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Tenaga Kerja')),
+            'Peralatan' => Tab::make('Inactive customers')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Peralatan')),
         ];
     }
 

@@ -10,8 +10,10 @@ use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
+use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -41,6 +43,17 @@ class ListComponents extends ListRecords
 
             return [];
         }
-
+    }
+    public function getTabs(): array
+    {
+        return [
+            'all' => Tab::make('All Components'),
+            'Bahan' => Tab::make('Bahan')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Bahan')),
+            'Tenaga Kerja' => Tab::make('Tenaga Kerja')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Tenaga Kerja')),
+            'Peralatan' => Tab::make('Peralatan')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Peralatan')),
+        ];
     }
 }
