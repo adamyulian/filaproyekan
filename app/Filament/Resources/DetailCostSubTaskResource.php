@@ -8,6 +8,7 @@ use App\Models\Brand;
 use App\Models\CostComponent;
 use App\Models\DetailCostSubTask;
 use App\Models\SubTask;
+use App\Models\Task;
 use App\Models\Unit;
 use App\Models\User;
 use Filament\Tables\Actions\ActionGroup;
@@ -39,15 +40,38 @@ class DetailCostSubTaskResource extends Resource
     {
         return $form
             ->schema([
+                Select::make('task_id')
+                ->required()
+                ->label('Task')
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    )
+                ->searchable(),
                 Select::make('sub_task_id')
                 ->required()
                 ->label('Sub Task')
-                ->options(SubTask::all()->pluck('nama', 'id'))
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    )
                 ->searchable(),
                 Select::make('cost_component_id')
                 ->required()
                 ->label('Cost Component')
-                ->options(CostComponent::all()->pluck('nama','id'))
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    )
                 ->createOptionForm([
                     Forms\Components\TextInput::make('nama')
                     ->required()
@@ -60,11 +84,17 @@ class DetailCostSubTaskResource extends Resource
                             'Peralatan' => 'Peralatan',
                             'Subkontraktor' => 'Subkontraktor'
                         ]),
-                    Select::make('unit_id')
-                    ->required()
-                    ->label('Unit')
-                    ->options(Unit::all()->pluck('nama', 'id'))
-                    ->searchable(),
+                        Select::make('unit_id')
+                        ->required()
+                        ->label('Unit')
+                        ->searchable()
+                        ->relationship(
+                            name: 'unit',
+                            titleAttribute: 'nama',
+                            modifyQueryUsing: function (Builder $query) {
+                                $userId = Auth::user()->id;
+                                $query->where('user_id', $userId);}
+                            ),
                     Forms\Components\TextInput::make('hargaunit')
                         ->label('Harga Satuan')
                         ->required()
@@ -77,9 +107,6 @@ class DetailCostSubTaskResource extends Resource
                     ->required()
                     ->label('Brand')
                     ->options(Brand::all()->pluck('nama', 'id'))
-                    ->searchable(),
-                    Select::make('user_id')
-                    ->options(User::all()->pluck('name','id'))
                     ->searchable(),
                     ])
                 ->searchable(),

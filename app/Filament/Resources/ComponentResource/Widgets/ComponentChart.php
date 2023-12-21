@@ -15,14 +15,14 @@ class ComponentChart extends ChartWidget
 
     protected int | string | array $columnSpan = 'full';
 
-    protected static ?string $maxHeight = '300px';
+    protected static ?string $maxHeight = '250px';
 
     protected function getData(): array
     {
         $data = Trend::model(Component::class)
             ->between(
                 start: now()->startOfMonth(),
-                end: now()->endOfMonth(),
+                end: now(),
             )
             ->perDay()
             ->count();
@@ -32,6 +32,8 @@ class ComponentChart extends ChartWidget
                 [
                     'label' => 'Components',
                     'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
+                    'backgroundColor' => '#36A2EB',
+                    'borderColor' => '#9BD0F5',
                 ],
             ],
             'labels' => $data->map(fn (TrendValue $value) => $value->date),

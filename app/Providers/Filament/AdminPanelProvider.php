@@ -30,7 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('2023')
             ->login()
-            ->brandLogo(asset('images/proyekan.svg'))
+            ->brandLogo(asset('images/proyekan1.svg'))
             ->colors([
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,

@@ -41,12 +41,24 @@ class DetailSubTaskResource extends Resource
                 Select::make('sub_task_id')
                 ->required()
                 ->label('Sub Task')
-                ->options(SubTask::all()->pluck('nama', 'id'))
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    )
                 ->searchable(),
                 Select::make('component_id')
                 ->required()
                 ->label('Component')
-                ->relationship(name: 'component', titleAttribute: 'nama')
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    )
                 ->createOptionForm([
                     TextInput::make('nama')
                     ->required(),
@@ -116,6 +128,7 @@ class DetailSubTaskResource extends Resource
                     Tables\Actions\DeleteAction::make(),
                     ])
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

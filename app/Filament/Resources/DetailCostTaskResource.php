@@ -37,12 +37,24 @@ class DetailCostTaskResource extends Resource
                 Select::make('task_id')
                 ->required()
                 ->label('Task')
-                ->options(Task::all()->pluck('nama', 'id'))
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    )
                 ->searchable(),
                 Select::make('sub_task_id')
                 ->required()
                 ->label('Sub Task')
-                ->relationship(name: 'subtask', titleAttribute: 'nama'),
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    ),
 
                 TextInput::make('volume')
                 ->label('Earned Volume')
