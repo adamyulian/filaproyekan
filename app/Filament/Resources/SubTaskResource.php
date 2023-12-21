@@ -26,6 +26,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class SubTaskResource extends Resource
@@ -55,6 +56,10 @@ class SubTaskResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $userId = Auth::user()->id;
+                $query->where('user_id', $userId);
+            })
             ->columns([
                 TextColumn::make('nama')
                 ->sortable()
@@ -75,47 +80,6 @@ class SubTaskResource extends Resource
                 })
                 ->money('IDR')
                 ->label('Planned Price'),
-                // TextColumn::make('cost')
-                // ->state(function (SubTask $record): float {
-                //     $subtotal = 0;
-                //     $detailcostsubtasks = DetailCostSubTask::select('*')->where('sub_task_id', $record->id)->get();
-                //     foreach ($detailcostsubtasks as $key => $rincian){
-                //         $volume = $rincian->volume;
-                //         $harga_unit = $rincian->costcomponent->hargaunit;
-                //         $subtotal1 = $volume * $harga_unit;
-                //         $subtotal+=$subtotal1;
-                //     }
-                //     return $subtotal;
-                // })
-                // ->money('IDR')
-                // ->label('Cost'),
-                // TextColumn::make('Remaining Budget')
-                // ->money('IDR')
-                // ->label('Remaining Budget')
-                // ->weight(FontWeight::Bold)
-                // ->color('primary')
-                // ->state(function (SubTask $record): float {
-                //     $subtotal = 0;
-                //     $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $record->id)->get();
-                //     foreach ($detailsubtasks as $key => $rincian){
-                //         $koefisien = $rincian->koefisien;
-                //         $harga_unit = $rincian->component->hargaunit;
-                //         $subtotal1 = $koefisien * $harga_unit;
-                //         $subtotal+=$subtotal1;
-                //     }
-                //     $subtotalcost = 0;
-                //     $detailcostsubtasks = DetailCostSubTask::select('*')->where('sub_task_id', $record->id)->get();
-                //     foreach ($detailcostsubtasks as $key => $rincian){
-                //         $volume = $rincian->volume;
-                //         $harga_unit = $rincian->costcomponent->hargaunit;
-                //         $subtotal1 = $volume * $harga_unit;
-                //         $subtotalcost+=$subtotal1;
-                //     }
-                //     return $subtotal-$subtotalcost;
-                // }),
-                // IconColumn::make('is_published')
-                // ->label('Status Tayang')
-                // ->boolean(),
             ])
             ->filters([
                 //

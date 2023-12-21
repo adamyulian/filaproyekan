@@ -18,6 +18,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class DetailCostTaskResource extends Resource
 {
@@ -52,6 +53,10 @@ class DetailCostTaskResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->modifyQueryUsing(function (Builder $query) {
+            $userId = Auth::user()->id;
+            $query->where('user_id', $userId);
+        })
         ->defaultGroup('task.nama')
         ->columns([
             TextColumn::make('subtask.nama')

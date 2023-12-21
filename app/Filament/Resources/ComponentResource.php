@@ -25,6 +25,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ComponentResource extends Resource
@@ -65,9 +66,6 @@ class ComponentResource extends Resource
                 ->label('Brand')
                 ->options(Brand::all()->pluck('nama', 'id'))
                 ->searchable(),
-                Select::make('user_id')
-                ->options(User::all()->pluck('name','id'))
-                ->searchable(),
 
             ]);
     }
@@ -75,7 +73,10 @@ class ComponentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-
+            ->modifyQueryUsing(function (Builder $query) {
+                $userId = Auth::user()->id;
+                $query->where('user_id', $userId);
+            })
             ->defaultGroup('jenis')
             ->columns([
                 TextColumn::make('nama')

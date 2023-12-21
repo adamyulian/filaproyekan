@@ -20,6 +20,7 @@ use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class CostComponentResource extends Resource
 {
@@ -77,6 +78,10 @@ class CostComponentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $userId = Auth::user()->id;
+                $query->where('user_id', $userId);
+            })
             ->defaultGroup('jenis')
             ->columns([
                 Tables\Columns\TextColumn::make('nama')

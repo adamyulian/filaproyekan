@@ -22,12 +22,4 @@ class Unit extends Model
         return $this->hasMany(related:Component::class);
     }
 
-    public function Hspk()
-    {
-        return $this->hasMany(related:Hspk::class);
-    }
-    public function Project()
-    {
-        return $this->hasMany(related:Project::class);
-    }
 }

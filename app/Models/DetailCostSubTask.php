@@ -13,7 +13,8 @@ class DetailCostSubTask extends Model
     protected $fillable = [
         'volume',
         'cost_component_id',
-        'sub_task_id'
+        'sub_task_id',
+        'user_id',
     ];
     public function CostComponent()
     {

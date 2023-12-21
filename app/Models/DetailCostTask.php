@@ -13,7 +13,8 @@ class DetailCostTask extends Model
     protected $fillable = [
         'volume',
         'sub_task_id',
-        'task_id'
+        'task_id',
+        'user_id',
     ];
     public function SubTask()
     {

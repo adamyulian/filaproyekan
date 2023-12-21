@@ -14,7 +14,8 @@ class SubTask extends Model
         'nama',
         'deskripsi',
         'unit_id',
-        'is_published'
+        'is_published',
+        'user_id',
     ];
     public function Unit()
     {

@@ -13,7 +13,8 @@ class DetailSubTask extends Model
     protected $fillable = [
         'koefisien',
         'component_id',
-        'sub_task_id'
+        'sub_task_id',
+        'user_id',
     ];
     public function Component()
     {
