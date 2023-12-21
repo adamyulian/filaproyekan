@@ -20,6 +20,7 @@ use Filament\Tables\Actions\ActionGroup as ActionsActionGroup;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class CostComponentResource extends Resource
 {
@@ -45,16 +46,23 @@ class CostComponentResource extends Resource
                         'Subkontraktor' => 'Subkontraktor'
                     ]),
                     Select::make('unit_id')
-                    ->required()
-                    ->label('Unit')
-                    ->options(Unit::all()->pluck('nama', 'id'))
-                    ->searchable()
-                    ->relationship(name: 'unit', titleAttribute: 'nama')
-                    ->createOptionForm([
-                        TextInput::make(name:'nama')->required(),
-                        TextInput::make(name:'deskripsi')->required(),
-                        Radio::make('is_published')->label('Is Published?')->boolean()
-                    ]),
+                ->required()
+                ->label('Unit')
+                ->createOptionForm([
+                    Forms\Components\TextInput::make('nama')
+                        ->required(),
+                    Forms\Components\TextInput::make('deskripsi')
+                        ->required(),
+                    Forms\Components\Toggle::make('is_published')->label('Visibility')
+                        ])
+                ->searchable()
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    ),
                 Forms\Components\TextInput::make('hargaunit')
                     ->label('Harga Satuan')
                     ->required()
@@ -66,10 +74,13 @@ class CostComponentResource extends Resource
                     Select::make('brand_id')
                     ->required()
                     ->label('Brand')
-                    ->options(Brand::all()->pluck('nama', 'id'))
-                    ->searchable(),
-                    Select::make('user_id')
-                    ->options(User::all()->pluck('name','id'))
+                    ->relationship(
+                        name: 'unit',
+                        titleAttribute: 'nama',
+                        modifyQueryUsing: function (Builder $query) {
+                            $userId = Auth::user()->id;
+                            $query->where('user_id', $userId);}
+                        )
                     ->searchable(),
             ]);
     }
@@ -77,6 +88,10 @@ class CostComponentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $userId = Auth::user()->id;
+                $query->where('user_id', $userId);
+            })
             ->defaultGroup('jenis')
             ->columns([
                 Tables\Columns\TextColumn::make('nama')

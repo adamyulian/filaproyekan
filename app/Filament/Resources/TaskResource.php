@@ -31,6 +31,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class TaskResource extends Resource
 {
@@ -49,8 +50,21 @@ class TaskResource extends Resource
                 Select::make('unit_id')
                 ->required()
                 ->label('Unit')
-                ->options(Unit::all()->pluck('nama', 'id'))
-                ->searchable(),
+                ->createOptionForm([
+                    Forms\Components\TextInput::make('nama')
+                        ->required(),
+                    Forms\Components\TextInput::make('deskripsi')
+                        ->required(),
+                    Forms\Components\Toggle::make('is_published')->label('Visibility')
+                        ])
+                ->searchable()
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    ),
                 Radio::make('is_published')->label('Is Published?')->boolean()
 
             ]);
@@ -59,6 +73,10 @@ class TaskResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $userId = Auth::user()->id;
+                $query->where('user_id', $userId);
+            })
             ->columns([
                 TextColumn::make('nama')
                 ->sortable()

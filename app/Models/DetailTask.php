@@ -13,7 +13,8 @@ class DetailTask extends Model
     protected $fillable = [
         'koefisien',
         'sub_task_id',
-        'task_id'
+        'task_id',
+        'user_id',
     ];
     public function SubTask()
     {

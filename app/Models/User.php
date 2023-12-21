@@ -49,4 +49,10 @@ class User extends Authenticatable
     // {
     //     return str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
     // }
+
+    public function Component()
+    {
+        return $this->hasMany(related:Component::class);
+    }
+
 }

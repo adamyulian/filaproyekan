@@ -18,6 +18,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class DetailCostTaskResource extends Resource
 {
@@ -36,12 +37,24 @@ class DetailCostTaskResource extends Resource
                 Select::make('task_id')
                 ->required()
                 ->label('Task')
-                ->options(Task::all()->pluck('nama', 'id'))
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    )
                 ->searchable(),
                 Select::make('sub_task_id')
                 ->required()
                 ->label('Sub Task')
-                ->relationship(name: 'subtask', titleAttribute: 'nama'),
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    ),
 
                 TextInput::make('volume')
                 ->label('Earned Volume')
@@ -52,6 +65,10 @@ class DetailCostTaskResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->modifyQueryUsing(function (Builder $query) {
+            $userId = Auth::user()->id;
+            $query->where('user_id', $userId);
+        })
         ->defaultGroup('task.nama')
         ->columns([
             TextColumn::make('subtask.nama')

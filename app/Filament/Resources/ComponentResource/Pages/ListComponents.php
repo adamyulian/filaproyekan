@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ComponentResource\Pages;
 
 use App\Filament\Resources\ComponentResource;
+use App\Filament\Resources\ComponentResource\Widgets\ComponentChart;
 use App\Imports\ImportComponents;
 use App\Models\Component;
 use EightyNine\ExcelImport\ExcelImportAction;
@@ -11,6 +12,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ListComponents extends ListRecords
@@ -26,4 +28,19 @@ class ListComponents extends ListRecords
         ];
     }
 
+    protected function getHeaderWidgets(): array
+    {
+        $user = auth()->user();
+
+        if ($user && $user->id === 1) {
+            // Admin gets all data
+            return [
+                ComponentChart::class
+            ];
+        } else {
+
+            return [];
+        }
+
+    }
 }

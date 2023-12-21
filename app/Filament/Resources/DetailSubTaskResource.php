@@ -23,6 +23,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class DetailSubTaskResource extends Resource
@@ -40,12 +41,24 @@ class DetailSubTaskResource extends Resource
                 Select::make('sub_task_id')
                 ->required()
                 ->label('Sub Task')
-                ->options(SubTask::all()->pluck('nama', 'id'))
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    )
                 ->searchable(),
                 Select::make('component_id')
                 ->required()
                 ->label('Component')
-                ->relationship(name: 'component', titleAttribute: 'nama')
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    )
                 ->createOptionForm([
                     TextInput::make('nama')
                     ->required(),
@@ -87,6 +100,10 @@ class DetailSubTaskResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $userId = Auth::user()->id;
+                $query->where('user_id', $userId);
+            })
             ->defaultGroup('subtask.nama')
             ->columns([
                 TextColumn::make('component.nama')
@@ -111,6 +128,7 @@ class DetailSubTaskResource extends Resource
                     Tables\Actions\DeleteAction::make(),
                     ])
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
