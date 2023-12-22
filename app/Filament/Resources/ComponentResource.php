@@ -89,17 +89,19 @@ class ComponentResource extends Resource
                 $userId = Auth::user()->id;
                 $query->where('user_id', $userId);
             })
-            ->defaultGroup('jenis')
             ->columns([
                 TextColumn::make('nama')
+                ->label('Name')
                 ->sortable()
                 ->description(fn (Component $record): string => $record->deskripsi)
                 ->searchable(),
-                TextColumn::make('unit.nama'),
+                TextColumn::make('unit.nama')
+                ->label('Unit'),
                 TextColumn::make('hargaunit')
-                ->label('Harga Satuan')
+                ->label('Price')
                 ->money('IDR'),
-                TextColumn::make('brand.nama'),
+                TextColumn::make('brand.nama')
+                ->label('Merk'),
 
             ])
             ->filters([
@@ -134,18 +136,7 @@ class ComponentResource extends Resource
         ];
     }
 
-    public function getTabs(): array
-    {
-        return [
-            'all' => Tab::make('All Components'),
-            'Bahan' => Tab::make('Bahan')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Bahan')),
-            'Tenaga Kerja' => Tab::make('Inactive customers')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Tenaga Kerja')),
-            'Peralatan' => Tab::make('Inactive customers')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Peralatan')),
-        ];
-    }
+
 
     public static function getPages(): array
     {

@@ -48,11 +48,11 @@ class ListComponents extends ListRecords
     {
         return [
             'all' => Tab::make('All Components'),
-            'Bahan' => Tab::make('Bahan')
+            'Bahan' => Tab::make('Materials')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Bahan')),
-            'Tenaga Kerja' => Tab::make('Tenaga Kerja')
+            'Tenaga Kerja' => Tab::make('Workers')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Tenaga Kerja')),
-            'Peralatan' => Tab::make('Peralatan')
+            'Peralatan' => Tab::make('Tools')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Peralatan')),
         ];
     }

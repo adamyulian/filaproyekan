@@ -92,7 +92,6 @@ class CostComponentResource extends Resource
                 $userId = Auth::user()->id;
                 $query->where('user_id', $userId);
             })
-            ->defaultGroup('jenis')
             ->columns([
                 Tables\Columns\TextColumn::make('nama')
                     ->searchable()
