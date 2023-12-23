@@ -45,7 +45,7 @@ class CostComponentResource extends Resource
                         'Peralatan' => 'Peralatan',
                         'Subkontraktor' => 'Subkontraktor'
                     ]),
-                    Select::make('unit_id')
+                Select::make('unit_id')
                 ->required()
                 ->label('Unit')
                 ->createOptionForm([

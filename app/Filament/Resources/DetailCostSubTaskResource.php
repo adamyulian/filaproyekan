@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DetailCostSubTaskResource\Pages;
 use App\Filament\Resources\DetailCostSubTaskResource\RelationManagers;
 use App\Models\Brand;
+use App\Models\Component;
 use App\Models\CostComponent;
 use App\Models\DetailCostSubTask;
 use App\Models\SubTask;
@@ -13,7 +14,9 @@ use App\Models\Unit;
 use App\Models\User;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -44,7 +47,7 @@ class DetailCostSubTaskResource extends Resource
                 ->required()
                 ->label('Task')
                 ->relationship(
-                    name: 'unit',
+                    name: 'task',
                     titleAttribute: 'nama',
                     modifyQueryUsing: function (Builder $query) {
                         $userId = Auth::user()->id;
@@ -55,61 +58,84 @@ class DetailCostSubTaskResource extends Resource
                 ->required()
                 ->label('Sub Task')
                 ->relationship(
-                    name: 'unit',
+                    name: 'subtask',
                     titleAttribute: 'nama',
                     modifyQueryUsing: function (Builder $query) {
                         $userId = Auth::user()->id;
                         $query->where('user_id', $userId);}
                     )
                 ->searchable(),
-                Select::make('cost_component_id')
-                ->required()
-                ->label('Cost Component')
-                ->relationship(
-                    name: 'unit',
-                    titleAttribute: 'nama',
-                    modifyQueryUsing: function (Builder $query) {
-                        $userId = Auth::user()->id;
-                        $query->where('user_id', $userId);}
-                    )
-                ->createOptionForm([
-                    Forms\Components\TextInput::make('nama')
-                    ->required()
-                    ->maxLength(255),
-                    Select::make('jenis')
+
+                Section::make('Choose Cost Component')
+                    ->description('Choose Cost Component already created before')
+                    ->compact()
+                    ->columns(2)
+                    ->schema([
+                        Select::make('cost_component_id')
                         ->required()
-                        ->options([
-                            'Tenaga Kerja' => 'Tenaga Kerja',
-                            'Bahan' => 'Bahan',
-                            'Peralatan' => 'Peralatan',
-                            'Subkontraktor' => 'Subkontraktor'
-                        ]),
-                        Select::make('unit_id')
-                        ->required()
-                        ->label('Unit')
+                        ->label('Cost Component')
                         ->searchable()
+                        ->live(onBlur:True)
+                        ->afterStateUpdated(function (string $state, Unit $unit, Forms\Set $set) {
+                            $set('unit', CostComponent::find($state)->unit->nama);
+                            $set('hargaunit', CostComponent::find($state)->hargaunit);
+                            $set('brand', CostComponent::find($state)->brand->nama);
+                        })
                         ->relationship(
-                            name: 'unit',
+                            name: 'costcomponent',
                             titleAttribute: 'nama',
                             modifyQueryUsing: function (Builder $query) {
                                 $userId = Auth::user()->id;
                                 $query->where('user_id', $userId);}
-                            ),
-                    Forms\Components\TextInput::make('hargaunit')
-                        ->label('Harga Satuan')
-                        ->required()
-                        ->numeric(),
-                    Forms\Components\Textarea::make('deskripsi')
-                        ->required()
-                        ->maxLength(65535)
-                        ->columnSpanFull(),
-                    Select::make('brand_id')
-                    ->required()
-                    ->label('Brand')
-                    ->options(Brand::all()->pluck('nama', 'id'))
-                    ->searchable(),
-                    ])
-                ->searchable(),
+                            )
+                        ->createOptionForm([
+                            Forms\Components\TextInput::make('nama')
+                            ->required()
+                            ->maxLength(255),
+                            Select::make('jenis')
+                                ->required()
+                                ->options([
+                                    'Tenaga Kerja' => 'Tenaga Kerja',
+                                    'Bahan' => 'Bahan',
+                                    'Peralatan' => 'Peralatan',
+                                    'Subkontraktor' => 'Subkontraktor'
+                                ]),
+                            Select::make('unit_id')
+                                ->required()
+                                ->label('Unit')
+                                ->searchable()
+                                ->relationship(
+                                    name: 'unit',
+                                    titleAttribute: 'nama',
+                                    modifyQueryUsing: function (Builder $query) {
+                                        $userId = Auth::user()->id;
+                                        $query->where('user_id', $userId);}
+                                    ),
+                            TextInput::make('hargaunit')
+                                ->label('Harga Satuan')
+                                ->required()
+                                ->numeric(),
+                            Textarea::make('deskripsi')
+                                ->required()
+                                ->maxLength(65535)
+                                ->columnSpanFull(),
+                            Select::make('brand_id')
+                                ->required()
+                                ->label('Brand')
+                                ->options(Brand::all()->pluck('nama', 'id'))
+                                ->searchable(),
+                                ]),
+                        TextInput::make('unit')
+                        ->label('Unit')
+                        ->disabled(),
+                        TextInput::make('hargaunit')
+                        ->label('Price')
+                        ->disabled(),
+                        TextInput::make('brand')
+                        ->label('Merk')
+                        ->disabled(),
+                            ]),
+
                 TextInput::make('volume')
                 ->required(),
             ]);

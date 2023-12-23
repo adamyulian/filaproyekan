@@ -24,4 +24,8 @@ class DetailCostSubTask extends Model
     {
         return $this->belongsTo(related:SubTask::class);
     }
+    public function Task()
+    {
+        return $this->belongsTo(related:Task::class);
+    }
 }

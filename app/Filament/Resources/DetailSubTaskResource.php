@@ -53,7 +53,7 @@ class DetailSubTaskResource extends Resource
                 ->required()
                 ->label('Component')
                 ->relationship(
-                    name: 'unit',
+                    name: 'component',
                     titleAttribute: 'nama',
                     modifyQueryUsing: function (Builder $query) {
                         $userId = Auth::user()->id;

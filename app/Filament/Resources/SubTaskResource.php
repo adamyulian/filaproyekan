@@ -46,8 +46,21 @@ class SubTaskResource extends Resource
                 Select::make('unit_id')
                 ->required()
                 ->label('Unit')
-                ->options(Unit::all()->pluck('nama', 'id'))
-                ->searchable(),
+                ->createOptionForm([
+                    Forms\Components\TextInput::make('nama')
+                        ->required(),
+                    Forms\Components\TextInput::make('deskripsi')
+                        ->required(),
+                    Forms\Components\Toggle::make('is_published')->label('Visibility')
+                        ])
+                ->searchable()
+                ->relationship(
+                    name: 'unit',
+                    titleAttribute: 'nama',
+                    modifyQueryUsing: function (Builder $query) {
+                        $userId = Auth::user()->id;
+                        $query->where('user_id', $userId);}
+                    ),
                 Radio::make('is_published')->label('Is Published?')->boolean()
 
             ]);
