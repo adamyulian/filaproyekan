@@ -14,12 +14,19 @@ class Unit extends Model
         'nama',
         'deskripsi',
         'is_published',
+        'user_id',
         'softdeletes'
+
     ];
 
     public function Component()
     {
         return $this->hasMany(related:Component::class);
+    }
+
+    public function User()
+    {
+        return $this->belongsTo(related:User::class);
     }
 
 }

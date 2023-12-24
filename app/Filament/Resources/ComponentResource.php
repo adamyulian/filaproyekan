@@ -53,13 +53,6 @@ class ComponentResource extends Resource
                 Select::make('unit_id')
                 ->required()
                 ->label('Unit')
-                ->createOptionForm([
-                    Forms\Components\TextInput::make('nama')
-                        ->required(),
-                    Forms\Components\TextInput::make('deskripsi')
-                        ->required(),
-                    Forms\Components\Toggle::make('is_published')->label('Visibility')
-                        ])
                 ->searchable()
                 ->relationship(
                     name: 'unit',
@@ -67,7 +60,14 @@ class ComponentResource extends Resource
                     modifyQueryUsing: function (Builder $query) {
                         $userId = Auth::user()->id;
                         $query->where('user_id', $userId);}
-                    ),
+                    )
+                ->options(Unit::all()->pluck('nama', 'id'))
+                ->createOptionForm([
+                    TextInput::make(name:'nama')->required(),
+                TextInput::make(name:'deskripsi')->required(),
+                Radio::make('is_published')->label('Is Published?')->boolean(),
+                TextInput::make(name:'user_id')->required()->hidden()
+                ]),
                 TextInput::make('hargaunit')
                 ->label('Harga Satuan')
                 ->required(),
