@@ -51,9 +51,12 @@ class ComponentResource extends Resource
                     'Peralatan' => 'Peralatan',
                 ]),
                 Select::make('unit_id')
+                // ->mutateFormDataUsing(function (array $data): array {
+                //     $data['user_id']= auth()->id();
+                //     return $data;
+                // })
                 ->required()
                 ->label('Unit')
-                ->searchable()
                 ->relationship(
                     name: 'unit',
                     titleAttribute: 'nama',
@@ -61,13 +64,24 @@ class ComponentResource extends Resource
                         $userId = Auth::user()->id;
                         $query->where('user_id', $userId);}
                     )
-                ->options(Unit::all()->pluck('nama', 'id'))
+                // ->options(Unit::all()->pluck('nama', 'id'))
                 ->createOptionForm([
-                    TextInput::make(name:'nama')->required(),
-                TextInput::make(name:'deskripsi')->required(),
-                Radio::make('is_published')->label('Is Published?')->boolean(),
-                TextInput::make(name:'user_id')->required()->hidden()
-                ]),
+                    // $userId = Auth::user()->id,
+                    TextInput::make(name:'nama')
+                    ->required(),
+                    TextInput::make(name:'deskripsi')
+                    ->required(),
+                    Toggle::make('is_published')->label('Is Published?'),
+                    TextInput::make(name:'user_id')
+                    ->default(Auth::user()->id)
+                    // ->mutateFormDataUsing(function (array $data): array {
+                    //     $data['user_id']= auth()->id();
+                    //     return $data;
+                    // })
+                    ->required()
+                    ->disabled()
+                    ])
+                ->searchable(),
                 TextInput::make('hargaunit')
                 ->label('Harga Satuan')
                 ->required(),
