@@ -55,4 +55,8 @@ class User extends Authenticatable
         return $this->hasMany(related:Component::class);
     }
 
+    public function Unit()
+    {
+        return $this->hasMany(related:Unit::class);
+    }
 }

@@ -35,7 +35,8 @@ class UnitResource extends Resource
             ->schema([
                 TextInput::make(name:'nama')->required(),
                 TextInput::make(name:'deskripsi')->required(),
-                Radio::make('is_published')->label('Is Published?')->boolean()
+                Radio::make('is_published')->label('Is Published?')->boolean(),
+                TextInput::make(name:'user_id')->required()->hidden()
             ]);
     }
 

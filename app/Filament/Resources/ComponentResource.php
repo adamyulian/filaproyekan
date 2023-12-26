@@ -51,23 +51,37 @@ class ComponentResource extends Resource
                     'Peralatan' => 'Peralatan',
                 ]),
                 Select::make('unit_id')
+                // ->mutateFormDataUsing(function (array $data): array {
+                //     $data['user_id']= auth()->id();
+                //     return $data;
+                // })
                 ->required()
                 ->label('Unit')
-                ->createOptionForm([
-                    Forms\Components\TextInput::make('nama')
-                        ->required(),
-                    Forms\Components\TextInput::make('deskripsi')
-                        ->required(),
-                    Forms\Components\Toggle::make('is_published')->label('Visibility')
-                        ])
-                ->searchable()
                 ->relationship(
                     name: 'unit',
                     titleAttribute: 'nama',
                     modifyQueryUsing: function (Builder $query) {
                         $userId = Auth::user()->id;
                         $query->where('user_id', $userId);}
-                    ),
+                    )
+                // ->options(Unit::all()->pluck('nama', 'id'))
+                ->createOptionForm([
+                    // $userId = Auth::user()->id,
+                    TextInput::make(name:'nama')
+                    ->required(),
+                    TextInput::make(name:'deskripsi')
+                    ->required(),
+                    Toggle::make('is_published')->label('Is Published?'),
+                    TextInput::make(name:'user_id')
+                    ->default(Auth::user()->id)
+                    // ->mutateFormDataUsing(function (array $data): array {
+                    //     $data['user_id']= auth()->id();
+                    //     return $data;
+                    // })
+                    ->required()
+                    ->disabled()
+                    ])
+                ->searchable(),
                 TextInput::make('hargaunit')
                 ->label('Harga Satuan')
                 ->required(),

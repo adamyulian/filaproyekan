@@ -38,7 +38,7 @@ class DetailCostTaskResource extends Resource
                 ->required()
                 ->label('Task')
                 ->relationship(
-                    name: 'unit',
+                    name: 'task',
                     titleAttribute: 'nama',
                     modifyQueryUsing: function (Builder $query) {
                         $userId = Auth::user()->id;
@@ -49,7 +49,7 @@ class DetailCostTaskResource extends Resource
                 ->required()
                 ->label('Sub Task')
                 ->relationship(
-                    name: 'unit',
+                    name: 'subtask',
                     titleAttribute: 'nama',
                     modifyQueryUsing: function (Builder $query) {
                         $userId = Auth::user()->id;
