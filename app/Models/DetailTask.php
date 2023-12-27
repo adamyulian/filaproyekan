@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class DetailTask extends Model
 {
@@ -16,6 +17,12 @@ class DetailTask extends Model
         'task_id',
         'user_id',
     ];
+
+    protected static function booted() {
+        static::creating(function($model) {
+            $model->user_id = Auth::user()->id;
+        });
+    }
     public function SubTask()
     {
         return $this->belongsTo(related:SubTask::class);

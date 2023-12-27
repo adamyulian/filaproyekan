@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class CostComponent extends Model
 {
@@ -19,6 +20,13 @@ class CostComponent extends Model
         'deskripsi',
         'brand_id'
     ];
+
+    protected static function booted() {
+        static::creating(function($model) {
+            $model->user_id = Auth::user()->id;
+        });
+    }
+    
     public function Unit()
     {
         return $this->belongsTo(related:Unit::class);

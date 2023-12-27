@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class DetailCostSubTask extends Model
 {
@@ -16,6 +17,12 @@ class DetailCostSubTask extends Model
         'sub_task_id',
         'user_id',
     ];
+
+    protected static function booted() {
+        static::creating(function($model) {
+            $model->user_id = Auth::user()->id;
+        });
+    }
     public function CostComponent()
     {
         return $this->belongsTo(related:CostComponent::class);

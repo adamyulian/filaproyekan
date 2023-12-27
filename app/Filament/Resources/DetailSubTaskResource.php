@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use Illuminate\Support\HtmlString;
 
 class DetailSubTaskResource extends Resource
 {
@@ -83,14 +84,12 @@ class DetailSubTaskResource extends Resource
                     ->required()
                     ->label('Brand')
                     ->options(Brand::all()->pluck('nama', 'id'))
-                    ->searchable(),
-                    Select::make('user_id')
-                    ->options(User::all()->pluck('name','id'))
                     ->searchable()
                     ])
                 ->searchable(),
                 TextInput::make('koefisien')
-                ->required(),
+                ->required()
+                ->helperText(new HtmlString ('Use <strong>. (dot)</strong> for decimal number')),
                 // Select::make('user_id')
                 // ->options(User::all()->pluck('name','id'))
                 // ->searchable(),

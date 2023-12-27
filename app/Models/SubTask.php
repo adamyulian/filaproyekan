@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Component;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SubTask extends Model
 {
@@ -17,6 +19,12 @@ class SubTask extends Model
         'is_published',
         'user_id',
     ];
+
+    protected static function booted() {
+        static::creating(function($model) {
+            $model->user_id = Auth::user()->id;
+        });
+    }
     public function Unit()
     {
         return $this->belongsTo(related:Unit::class);
@@ -28,5 +36,10 @@ class SubTask extends Model
     public function User()
     {
         return $this->belongsTo(related:User::class);
+    }
+
+    public function Component()
+    {
+        return $this->hasMany(related:Component::class);
     }
 }
