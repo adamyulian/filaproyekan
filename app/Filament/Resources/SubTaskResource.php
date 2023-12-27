@@ -2,32 +2,39 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\SubTaskResource\Pages;
-use App\Filament\Resources\SubTaskResource\RelationManagers;
-use App\Filament\Resources\SubTaskResource\RelationManagers\DetailSubTasksRelationManager;
-use App\Models\Component;
-use App\Models\DetailCostSubTask;
-use App\Models\DetailSubTask;
-use App\Models\SubTask;
-use App\Models\Unit;
 use Filament\Forms;
-use Filament\Forms\Components\Radio;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
+use App\Models\Unit;
+use App\Models\User;
+use Filament\Tables;
+use App\Models\Brand;
+use App\Models\SubTask;
 use Filament\Forms\Form;
-use Filament\Infolists\Components\TextEntry;
+use App\Models\Component;
+use Filament\Tables\Table;
+use App\Models\DetailSubTask;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use App\Models\DetailCostSubTask;
+use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Radio;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Wizard;
 use Filament\Support\Enums\FontWeight;
-use Filament\Tables;
-use Filament\Tables\Actions\ActionGroup;
+use Filament\Forms\Components\Repeater;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Wizard\Step;
+use Filament\Infolists\Components\TextEntry;
+use App\Filament\Resources\SubTaskResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use App\Filament\Resources\SubTaskResource\RelationManagers;
+use App\Filament\Resources\SubTaskResource\RelationManagers\DetailSubTasksRelationManager;
 
 class SubTaskResource extends Resource
 {
@@ -41,9 +48,27 @@ class SubTaskResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make(name:'nama')->required(),
-                TextInput::make(name:'deskripsi')->required(),
+
+                TextInput::make(name:'nama')
+                ->columnSpan([
+                    'sm' => 2,
+                    'xl' => 3,
+                    '2xl' => 4,
+                ])
+                ->required(),
+                TextInput::make(name:'deskripsi')
+                ->columnSpan([
+                    'sm' => 2,
+                    'xl' => 3,
+                    '2xl' => 4,
+                ])
+                ->required(),
                 Select::make('unit_id')
+                ->columnSpan([
+                    'sm' => 2,
+                    'xl' => 3,
+                    '2xl' => 4,
+                ])
                 ->required()
                 ->label('Unit')
                 ->createOptionForm([
@@ -61,8 +86,20 @@ class SubTaskResource extends Resource
                         $userId = Auth::user()->id;
                         $query->where('user_id', $userId);}
                     ),
-                Radio::make('is_published')->label('Is Published?')->boolean()
+                Radio::make('is_published')
+                ->columnSpan([
+                    'sm' => 2,
+                    'xl' => 3,
+                    '2xl' => 4,
+                ])
+                ->label('Is Published?')
+                ->boolean()
 
+            ])
+            ->columns([
+                'sm' => 3,
+                'xl' => 6,
+                '2xl' => 8,
             ]);
     }
 

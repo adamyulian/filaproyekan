@@ -29,4 +29,9 @@ class SubTask extends Model
     {
         return $this->belongsTo(related:User::class);
     }
+
+    public function Schedule()
+    {
+        return $this->hasMany(related:Schedule::class);
+    }
 }
