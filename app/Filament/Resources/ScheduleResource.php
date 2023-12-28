@@ -60,7 +60,10 @@ class ScheduleResource extends Resource
                     ->content(function($get){
                         $toDate = Carbon::parse($get('finish'));
                         $fromDate = Carbon::parse($get('start'));
-                        $days = $toDate->diffInDays($fromDate);
+                        $days = $toDate->diffInDaysFiltered(function(Carbon $date) {
+                            return !($date->isSunday() || $date->isSaturday());
+                        }, $fromDate);
+
 
                         return $days . " Days";
                     })
@@ -87,12 +90,14 @@ class ScheduleResource extends Resource
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('duration')
-                    ->state(function (Schedule $record): float {
+                    ->state(function (Schedule $record): float{
                         $schedule = Schedule::select('*')->where('id', $record->id)->get();
                         foreach ($schedule as $key => $rincian){
                             $toDate = Carbon::parse($rincian->finish);
                             $fromDate = Carbon::parse($rincian->start);
-                            $days = $toDate->diffInDays($fromDate);
+                            $days = $toDate->diffInDaysFiltered(function(Carbon $date) {
+                                return !($date->isSunday() || $date->isSaturday());
+                            }, $fromDate);
 
                         }
                         return $days ;
