@@ -19,6 +19,7 @@ use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Radio;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Components\Section;
 use Filament\Support\Enums\FontWeight;
@@ -47,115 +48,36 @@ class SubTaskResource extends Resource
     {
         return $form
             ->schema([
-
-                Wizard::make([
-                    Wizard\Step::make('SubTask')
-                        ->description('')
-                        ->columnSpanFull()
-                        ->columns(2)
-                        ->schema([
-                            TextInput::make(name:'nama')
-                            ->required()
-                            ->columnspan('md'),
-                            Select::make('unit_id')
+                TextInput::make(name:'nama')
+                        ->required()
+                        ->columnspan('md'),
+                Select::make('unit_id')
+                        ->required()
+                        ->label('Unit')
+                        ->createOptionForm([
+                            TextInput::make('nama')
                                 ->required()
-                                ->label('Unit')
-                                ->createOptionForm([
-                                    Forms\Components\TextInput::make('nama')
-                                        ->required(),
-                                    Forms\Components\TextInput::make('deskripsi')
-                                        ->required(),
-                                    Forms\Components\Toggle::make('is_published')->label('Visibility')
-                                        ])
-                                ->searchable()
-                                ->relationship(
-                                    name: 'unit',
-                                    titleAttribute: 'nama',
-                                    modifyQueryUsing: function (Builder $query) {
-                                        $userId = Auth::user()->id;
-                                        $query->where('user_id', $userId);}
-                                    ),
-                            Textarea::make(name:'deskripsi')->required(),
-                            
-                                Radio::make('is_published')->label('Is Published?')->boolean()
-                                    ]),
-                    Wizard\Step::make('DetailSubTask')
-                        ->description('')
-                        ->relationship()
-                        ->columns(2)
-                        ->schema([
-                            Section::make('Component')
-                                ->description('Choose components already created')
-                                ->columns(2)
-                                ->schema([
-                                    Select::make('component_id')
-                                    ->required()
-                                    ->label('Component')
-                                    ->live(onBlur:True)
-                                    ->afterStateUpdated(function (string $state, Set $set) {
-                                        $set('unit', Component::find($state)->unit->nama);
-                                        $set('hargaunit', Component::find($state)->hargaunit);
-                                        $set('brand', Component::find($state)->brand->nama);
-                                    })
-                                    ->relationship(
-                                        name: 'component',
-                                        titleAttribute: 'nama',
-                                        modifyQueryUsing: function (Builder $query) {
-                                            $userId = Auth::user()->id;
-                                            $query->where('user_id', $userId);}
-                                        )
-                                    ->createOptionForm([
-                                        TextInput::make('nama')
-                                        ->required(),
-                                        Select::make('jenis')
-                                        ->required()
-                                        ->options([
-                                            'Tenaga Kerja' => 'Tenaga Kerja',
-                                            'Bahan' => 'Bahan',
-                                            'Peralatan' => 'Peralatan',
-                                        ]),
-                                        Select::make('unit_id')
-                                        ->required()
-                                        ->label('Unit')
-                                        ->options(Unit::all()->pluck('nama', 'id'))
-                                        ->searchable(),
-                                        TextInput::make('hargaunit')
-                                        ->label('Harga Satuan')
-                                        ->required(),
-                                        TextInput::make('deskripsi')
-                                        ->required(),
-                                        Select::make('brand_id')
-                                        ->required()
-                                        ->label('Brand')
-                                        ->options(Brand::all()->pluck('nama', 'id'))
-                                        ->searchable()
-                                        ])
-                                    ->searchable(),
-                                    TextInput::make('unit')
-                                        ->label('Unit')
-                                        ->disabled(),
-                                        TextInput::make('hargaunit')
-                                        ->label('Price')
-                                        ->disabled(),
-                                        TextInput::make('brand')
-                                        ->label('Merk')
-                                        ->disabled(),
-                                        ])
-                                    
-                                ->columns(2),
-                            
-                            
-                            TextInput::make('koefisien')
-                            ->required()
-                            ->helperText(new HtmlString ('Use <strong>. (dot)</strong> for decimal number')),
-                            // Select::make('user_id')
-                            // ->options(User::all()->pluck('name','id'))
-                            // ->searchable(),
-                                    ])
-                                    ->columnSpanFull(),
+                                ,
+                            TextInput::make('deskripsi')
+                                ->required()
+                                ,
+                            Toggle::make('is_published')
+                                ->label('Visibility')
+                                
                             ])
-                            ->columnSpanFull(),
-
+                        ->searchable()
+                        ->relationship(
+                                name: 'unit',
+                                titleAttribute: 'nama',
+                                modifyQueryUsing: function (Builder $query) {
+                                $userId = Auth::user()->id;
+                                $query->where('user_id', $userId);}
+                                ),
+                        Textarea::make(name:'deskripsi')
+                        ->required(),
+                        Radio::make('is_published')
+                        ->label('Is Published?')
+                        ->boolean(),
             ]);
     }
 

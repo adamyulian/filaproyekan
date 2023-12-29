@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Schedule;
 use App\Models\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
@@ -41,5 +42,9 @@ class SubTask extends Model
     public function Component()
     {
         return $this->hasMany(related:Component::class);
+    }
+    public function Schedule()
+    {
+        return $this->hasMany(related:Schedule::class);
     }
 }
