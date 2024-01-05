@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Fila-PROYEKAN')
             ->id('admin')
             ->path('2023')
+            ->topNavigation()
             ->login()
             ->brandLogo(asset('images/proyekan1.svg'))
             ->colors([

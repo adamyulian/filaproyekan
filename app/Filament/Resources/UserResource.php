@@ -46,6 +46,8 @@ class UserResource extends Resource
                 TextColumn::make('name')
                 ->sortable()
                 ->description(fn (User $record): string => $record->email),
+                TextColumn::make('userLocation.countryName')
+                ->label('Location')
             ])
             ->filters([
                 //

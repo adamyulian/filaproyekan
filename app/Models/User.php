@@ -3,11 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Post;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Stevebauman\Location\Facades\Location;
 
 class User extends Authenticatable
 // implements FilamentUser
@@ -58,5 +60,16 @@ class User extends Authenticatable
     public function Unit()
     {
         return $this->hasMany(related:Unit::class);
+    }
+
+    public function Post()
+    {
+        return $this->hasMany(related:Post::class);
+    }
+    public function userLocation()
+    {
+        $ip = request()->ip();
+        $data = Location::get($ip);
+        return compact ('data');
     }
 }

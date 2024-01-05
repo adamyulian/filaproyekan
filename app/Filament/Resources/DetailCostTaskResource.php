@@ -28,7 +28,7 @@ class DetailCostTaskResource extends Resource
 
     protected static ?string $navigationLabel = 'Detail Cost Tasks (BCWP)';
 
-    protected static ?string $navigationGroup = 'Contruction';
+    protected static ?string $navigationGroup = 'Construction';
 
     public static function form(Form $form): Form
     {

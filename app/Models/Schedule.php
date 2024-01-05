@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Schedule extends Model
 {
-    use HasFactory, Softdeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'sub_task_id',

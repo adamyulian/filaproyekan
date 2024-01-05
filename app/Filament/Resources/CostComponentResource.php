@@ -28,7 +28,7 @@ class CostComponentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
 
-    protected static ?string $navigationGroup = 'Contruction';
+    protected static ?string $navigationGroup = 'Construction';
 
     public static function form(Form $form): Form
     {
