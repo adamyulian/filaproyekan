@@ -15,6 +15,7 @@ class Schedule extends Model
         'start',
         'finish',
         'user_id',
+        'is_published'
     ];
 
     public function Task()

@@ -53,7 +53,7 @@ class ScheduleResource extends Resource
                     modifyQueryUsing: function (Builder $query, $get) {
                         $userId = Auth::user()->id;
                         $taskId = $get('task_id');
-                        $query->where(['user_id','task_id'], [$userId, $taskId]);}
+                        $query->where('task_id', $taskId);}
                     )
                 ->searchable(),
 

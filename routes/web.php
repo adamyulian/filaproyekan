@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserLocationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,3 +20,5 @@ Route::get('/', function () {
 
 
 Route::post('/components/import_excel', 'ComponentController@import_excel')->name('import');
+
+Route::get('userlocation', [UserLocationController::class, 'index']);
