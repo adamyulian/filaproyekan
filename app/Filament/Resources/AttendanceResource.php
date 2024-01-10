@@ -27,21 +27,21 @@ class AttendanceResource extends Resource
 {
     protected static ?string $model = Attendance::class;
 
-    public static function getBreadcrumb(): string
-    {
-        return '';
-    }
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                TextInput::make('User')
+                Section::make('User Information')
+                ->schema([
+                    TextInput::make('User')
+                    ->label('Username')
                     ->default(Auth::user()->name)
-                    ->columnSpanFull()
+                    ->columnSpan(2)
                     ->disabled(),
+                ])
+                ->columns(2),
                 Section::make('Location')
                     ->schema([
                         Map::make('loc')

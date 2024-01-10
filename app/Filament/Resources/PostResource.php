@@ -5,16 +5,21 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\Post;
 use Filament\Tables;
+use Filament\Forms\Set;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Filament\Support\Enums\FontWeight;
+use Filament\Infolists\Components\Group;
 use Filament\Infolists\Components\Split;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
 use App\Filament\Resources\PostResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\PostResource\RelationManagers;
@@ -29,18 +34,21 @@ class PostResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
                 Forms\Components\TextInput::make('title')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->live('onBlur')
+                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                 Forms\Components\TextInput::make('slug')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->disabled(),
                 Forms\Components\FileUpload::make('image')
                     ->image(),
                 Forms\Components\RichEditor::make('body')
+                    ->fileAttachmentsDisk('public')
+                    // ->fileAttachmentsDirectory('attachments')
+                    // ->fileAttachmentsVisibility('public')
                     ->required()
                     ->maxLength(65535)
                     ->columnSpanFull(),
@@ -66,7 +74,6 @@ class PostResource extends Resource
                 Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('image'),
-                
                 Tables\Columns\TextColumn::make('published_at')
                     ->dateTime()
                     ->sortable(),
@@ -106,22 +113,30 @@ class PostResource extends Resource
     {
         return $infolist
             ->schema([
-                Split::make([
+                Group::make([
                     Section::make([
                         TextEntry::make('title')
-                            ->weight(FontWeight::Bold),
+                            ->hiddenLabel()
+                            ->weight(FontWeight::Bold)
+                            ->alignCenter()
+                            ->size(TextEntry\TextEntrySize::Large),
                         TextEntry::make('body')
-                            ->markdown()
+                            ->hiddenLabel()
+                            ->html()
                             ->prose(),
-                    ]),
+                        ImageEntry::make('image')
+                    ])
+
+                ])->columnSpan(4),
+                Group::make([
                     Section::make([
                         TextEntry::make('created_at')
                             ->dateTime(),
                         TextEntry::make('published_at')
                             ->dateTime(),
-                    ])->grow(false),
-                ])->from('md')
-            ]);
+                    ])
+                ])->columnSpan(1)
+            ])->columns(5);
     }
 
     public static function getRelations(): array
@@ -148,4 +163,6 @@ class PostResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    
 }

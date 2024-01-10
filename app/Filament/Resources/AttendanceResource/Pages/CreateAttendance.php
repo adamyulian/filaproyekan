@@ -23,8 +23,4 @@ class CreateAttendance extends CreateRecord
             ->keyBindings(['mod+s']);
     }
 
-    public function getBreadcrumb(): string
-    {
-        return static::$breadcrumb ?? __('filament::resources/pages/create-record.breadcrumb');
-    }
 }
