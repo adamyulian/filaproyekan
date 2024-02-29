@@ -34,7 +34,7 @@ class ScheduleResource extends Resource
                 ->label('Task')
                 ->live(onBlur:True)
                     ->afterStateUpdated(function (string $state, Forms\Set $set) {
-                        $set('sub_task_id', Task::find($state)->id );})
+                        $set('task_id', Task::find($state)->id );})
                 ->relationship(
                     name: 'task',
                     titleAttribute: 'nama',
@@ -49,12 +49,16 @@ class ScheduleResource extends Resource
 
                 ->relationship(
                     name: 'subtask',
-                    titleAttribute: 'nama',
+                    titleAttribute: 'sub_task_id.nama',
                     modifyQueryUsing: function (Builder $query, $get) {
                         $userId = Auth::user()->id;
                         $taskId = $get('task_id');
-                        $query->where('task_id', $taskId);}
-                    )
+            
+                        // Pastikan task_id dapat diakses dengan benar
+                        $query  ->where('task_id', $taskId)
+                                ->where('user_id', $userId); // Tambahan untuk memastikan hanya data yang sesuai dengan user yang terautentikasi ditampilkan
+                    }
+                )
                 ->searchable(),
 
                 Forms\Components\DatePicker::make('start')

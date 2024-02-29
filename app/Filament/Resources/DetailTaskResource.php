@@ -2,26 +2,29 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DetailTaskResource\Pages;
-use App\Filament\Resources\DetailTaskResource\RelationManagers;
-use App\Models\Component;
-use App\Models\DetailCostSubTask;
-use App\Models\DetailSubTask;
-use App\Models\DetailTask;
-use App\Models\SubTask;
-use App\Models\Task;
+use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Support\Enums\FontWeight;
+use App\Models\Task;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\SubTask;
+use Filament\Forms\Set;
+use Filament\Forms\Form;
+use App\Models\Component;
+use App\Models\DetailTask;
 use Filament\Tables\Table;
+use App\Models\DetailSubTask;
+use Filament\Resources\Resource;
+use App\Models\DetailCostSubTask;
+use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Support\Enums\FontWeight;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
+use App\Filament\Resources\DetailTaskResource\Pages;
+use App\Filament\Resources\DetailTaskResource\RelationManagers;
 
 class DetailTaskResource extends Resource
 {
@@ -35,20 +38,67 @@ class DetailTaskResource extends Resource
     {
         return $form
         ->schema([
-            Select::make('task_id')
-            ->required()
-            ->label('Task')
-            ->options(Task::all()->pluck('nama', 'id'))
-            ->searchable(),
-            Select::make('sub_task_id')
-            ->required()
-            ->label('Sub Task')
-            ->relationship(name: 'subtask', titleAttribute: 'nama'),
-            TextInput::make('koefisien')
-            ->required(),
-            // Select::make('user_id')
-            // ->options(User::all()->pluck('name','id'))
-            // ->searchable(),
+            Section::make([
+                Select::make('task_id')
+                ->label('Task')
+                ->relationship(name: 'task', titleAttribute: 'nama')
+                ->searchable()
+                ->required()
+                ->columnSpan(2),
+                Select::make('sub_task_id')
+                ->required()
+                ->label('Sub Task')
+                ->relationship(name: 'subtask', titleAttribute: 'nama')
+                ->live(onBlur:True)
+                ->afterStateUpdated(function (string $state, Set $set) {
+                     $set('total', 'subtask');})
+                ->columnSpan(2),
+                TextInput::make('koefisien')
+                ->required()
+                ->live(onBlur:True)
+                ->afterStateUpdated(function (string $state, Set $set) {
+                     $set('total', 'koefisien');})
+                ->columnSpan(1),
+                Forms\Components\Placeholder::make('total')
+                    ->columnSpan(1)
+                    ->content(function ($get){
+                        $subtotal = 0;
+                        $detailsubtasks = DetailSubTask::select('*')->where('sub_task_id', $get('subtask'))->get();
+                        dd($detailsubtasks);
+                        foreach ($detailsubtasks as $key => $rincian){
+                            $koefisien = $rincian->koefisien;
+                            $harga_unit = $rincian->component->hargaunit;
+                            $subtotal1 = $koefisien * $harga_unit;
+                            $subtotal+=$subtotal1;
+                        }
+                        // dd($subtotal);
+                        return $subtotal * $get('koefisien');
+                    })
+            ])
+            ->columns(6)
+            ->label('Detail Task Information'),
+            
+            Forms\Components\DatePicker::make('start')
+                    ->live(onBlur:True)
+                    ->afterStateUpdated(function (string $state, Set $set) {
+                        $set('duration', 'start');})
+                    ->required(),
+                Forms\Components\DatePicker::make('finish')
+                    ->live(onBlur:True)
+                    ->afterStateUpdated(function (string $state, Set $set) {
+                        $set('duration', 'finish');})
+                    ->required(),
+                Forms\Components\Placeholder::make('duration')
+                    ->content(function ($get){
+                        
+                        $toDate = Carbon::parse($get('finish'));
+                        $fromDate = Carbon::parse($get('start'));
+                        $days = $toDate->diffInDays($fromDate);
+                        // $days = $fromDate->diffInDaysFiltered(function(Carbon $date){
+                        //     return !($date->isSunday()||$date->isSaturday());
+                        // }, $toDate);
+                        return $days . " In Work Days";
+                    })
         ]);
     }
 

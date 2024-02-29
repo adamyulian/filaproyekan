@@ -19,11 +19,11 @@ class Brand extends Model
         'is_published'
     ];
 
-    protected static function booted() {
-        static::creating(function($model) {
-            $model->user_id = Auth::user()->id;
-        });
-    }
+    // protected static function booted() {
+    //     static::creating(function($model) {
+    //         $model->user_id = Auth::user()->id;
+    //     });
+    // }
 
     public function Component()
     {

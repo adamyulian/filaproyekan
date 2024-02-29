@@ -30,6 +30,8 @@ class ListCostComponents extends ListRecords
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Peralatan')),
             'Subkontraktor' => Tab::make('Subcontractors')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('jenis', 'Subkontraktor')),
+            'Brand' => Tab::make('Brand')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('brand.nama', 'Tanpa Merk')),
         ];
     }
 }
