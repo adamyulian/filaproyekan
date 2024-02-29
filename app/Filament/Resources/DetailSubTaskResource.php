@@ -89,7 +89,7 @@ class DetailSubTaskResource extends Resource
                 ->searchable(),
                 TextInput::make('koefisien')
                 ->required()
-                ->helperText(new HtmlString('Your <strong>full name</strong> here, including any middle names.'))
+                ->helperText(new HtmlString('Use <strong>. (dot)</strong> untuk tanda koma.'))
                 // Select::make('user_id')
                 // ->options(User::all()->pluck('name','id'))
                 // ->searchable(),
