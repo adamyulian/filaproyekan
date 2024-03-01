@@ -30,20 +30,20 @@ class ListComponents extends ListRecords
         ];
     }
 
-    protected function getHeaderWidgets(): array
-    {
-        // $user = auth()->user();
+    // protected function getHeaderWidgets(): array
+    // {
+    //     $user = auth()->user();
 
-        // if ($user && $user->id === 1) {
-        //     // Admin gets all data
-        //     return [
-        //         ComponentChart::class
-        //     ];
-        // } else {
+    //     if ($user && $user->id === 1) {
+    //         // Admin gets all data
+    //         return [
+    //             ComponentChart::class
+    //         ];
+    //     } else {
 
-        //     return [];
-        // }
-    }
+    //         return [];
+    //     }
+    // }
     public function getTabs(): array
     {
         return [

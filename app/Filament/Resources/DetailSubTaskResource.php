@@ -50,7 +50,8 @@ class DetailSubTaskResource extends Resource
                         $userId = Auth::user()->id;
                         $query->where('user_id', $userId);}
                     )
-                ->searchable(),
+                ->searchable()
+                ,
                 Select::make('component_id')
                 ->required()
                 ->preload()
