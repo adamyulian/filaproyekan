@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Panel;
 use App\Models\Post;
 use App\Models\Attendance;
 use Laravel\Sanctum\HasApiTokens;
@@ -17,6 +18,8 @@ class User extends Authenticatable
 implements MustVerifyEmail
 // implements FilamentUser
 {
+
+    
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -74,4 +77,10 @@ implements MustVerifyEmail
     {
         return $this->hasMany(related:Attendance::class);
     }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->hasVerifiedEmail();
+    }
+    
 }
