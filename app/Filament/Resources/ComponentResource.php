@@ -115,7 +115,7 @@ class ComponentResource extends Resource
                 ->label('Price')
                 ->money('IDR'),
                 TextColumn::make('brand.nama')
-                ->label('Merk'),
+                ->label('Brand'),
 
             ])
             ->filters([

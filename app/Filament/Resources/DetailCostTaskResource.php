@@ -37,6 +37,7 @@ class DetailCostTaskResource extends Resource
                 Select::make('task_id')
                 ->required()
                 ->label('Task')
+                ->preload()
                 ->relationship(
                     name: 'task',
                     titleAttribute: 'nama',
@@ -46,6 +47,7 @@ class DetailCostTaskResource extends Resource
                     )
                 ->searchable(),
                 Select::make('sub_task_id')
+                ->preload()
                 ->required()
                 ->label('Sub Task')
                 ->relationship(

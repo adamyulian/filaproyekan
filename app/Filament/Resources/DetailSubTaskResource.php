@@ -41,6 +41,7 @@ class DetailSubTaskResource extends Resource
             ->schema([
                 Select::make('sub_task_id')
                 ->required()
+                ->preload()
                 ->label('Sub Task')
                 ->relationship(
                     name: 'subtask',
@@ -52,6 +53,7 @@ class DetailSubTaskResource extends Resource
                 ->searchable(),
                 Select::make('component_id')
                 ->required()
+                ->preload()
                 ->label('Component')
                 ->relationship(
                     name: 'component',
