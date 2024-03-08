@@ -36,7 +36,7 @@ class AdminPanelProvider extends PanelProvider
             ->passwordReset()
             ->profile()
             ->emailVerification()
-            ->brandLogo(asset('images/proyekan1.svg'))
+            ->brandLogo(asset('images/proyekan_new.svg'))
             ->colors([
                 'danger' => Color::Rose,
                 'gray' => Color::Gray,
