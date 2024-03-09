@@ -21,6 +21,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "pxlrbt/filament-excel": "^2.1",
+        "stechstudio/filament-impersonate": "^3.7",
         "stevebauman/location": "^7.1"
     },
     "require-dev": {
