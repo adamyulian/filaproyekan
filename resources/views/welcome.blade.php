@@ -13,9 +13,9 @@
     <header class="bg-white" x-data="{ isOpen: false }">
       <nav class="container mx-auto px-8 py-4 md:flex md:items-center md:justify-between">
         <div class="flex items-center justify-between">
-          <a class="w-40 h-12" href="/2023" >
-            <img src={{asset('images/proyekan_new.svg')}}>
-          </a>
+          <a class="w-40 h-12" href="/2023">
+            <img src="{{ asset('images/proyekan_new.svg') }}" alt="Proyekan Image">
+        </a>
 
           <!-- Mobile menu button -->
           <div @click="isOpen = !isOpen" class="flex md:hidden">
