@@ -14,7 +14,7 @@
       <nav class="container mx-auto px-8 py-4 md:flex md:items-center md:justify-between">
         <div class="flex items-center justify-between">
           <a class="w-40 h-12" href="/2023" >
-            <img src={{asset('images/proyekan1.svg')}}>
+            <img src={{asset('images/proyekan_new.svg')}}>
           </a>
 
           <!-- Mobile menu button -->
@@ -185,7 +185,7 @@
       <div class="container mx-auto flex items-center px-5 py-8">
         <p class="text-sm text-black">
           @ 2022 Any —
-          <a href="#" class="ml-1 text-black" target="_blank">www.Google.com</a>
+          <a href="https://proyekan.com" class="ml-1 text-black" target="_blank">proyekan.com</a>
         </p>
       </div>
     </footer>
