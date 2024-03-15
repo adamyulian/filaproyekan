@@ -10,6 +10,8 @@ class Home extends Page
 
     protected static string $view = 'filament.pages.home';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function canAccess(): bool
     {
         return true ;
