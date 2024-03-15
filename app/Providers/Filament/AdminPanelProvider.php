@@ -23,6 +23,8 @@ use Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
 
 class AdminPanelProvider extends PanelProvider
 {
+    protected static bool $shouldRegisterNavigation = false;
+    
     public function panel(Panel $panel): Panel
     {
         return $panel
