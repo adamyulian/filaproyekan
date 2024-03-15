@@ -24,7 +24,7 @@ use Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
 class AdminPanelProvider extends PanelProvider
 {
     protected static bool $shouldRegisterNavigation = false;
-    
+
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('2023')
             ->topNavigation()
-            ->login()
+            ->login(null)
             ->registration()
             ->passwordReset()
             ->profile()
