@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('2023')
             ->topNavigation()
-            ->login(null)
+            ->login()
             ->registration()
             ->passwordReset()
             ->profile()
