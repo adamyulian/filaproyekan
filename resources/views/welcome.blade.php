@@ -44,7 +44,7 @@
           <div class="w-full">
             <h1 class="mb-2 text-4xl font-medium text-gray-900">Welcome to Proyekan</h1>
             <div class="leading-relaxed">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus hic, iure vel commodi voluptatibus, tenetur ipsum.</div>
-            <x-filament-actions::button>Get Started</x-filament-actions::button>
+            <x-filament::button>Get Started</x-filament::button>
           </div>
         </div>
       </div>
